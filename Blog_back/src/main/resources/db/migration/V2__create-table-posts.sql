@@ -1,0 +1,7 @@
+CREATE TABLE post (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    activo TINYINT NOT NULL DEFAULT 1,
+    mensaje VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY(id)
+);

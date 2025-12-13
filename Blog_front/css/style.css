@@ -1,0 +1,196 @@
+/* ======================================= */
+/* VARIABLES DE COLOR (Light/Dark) */
+/* ======================================= */
+
+:root {
+    --bg: #f5f6fa;
+    --text: #222;
+    --card: #ffffff;
+    --primary: #0077ff;
+    --border: #dfe1e5;
+}
+
+/* DARK MODE */
+[data-theme="dark"] {
+    --bg: #1e1e1e;
+    --text: #f5f5f5;
+    --card: #222;
+    --primary: #4ea8ff;
+    --border: #444;
+}
+
+/* ======================================= */
+/* RESET */
+/* ======================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    transition: .3s;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+/* ======================================= */
+/* HEADER */
+/* ======================================= */
+
+.header {
+    padding: 18px 25px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.nav a {
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+.theme-toggle {
+    cursor: pointer;
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+/* ======================================= */
+/* LISTA DE POSTS */
+/* ======================================= */
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+.posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
+    gap: 25px;
+}
+
+.post-card {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: .2s;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+}
+
+.post-card img {
+    width: 100%;
+}
+
+.post-card .content {
+    padding: 15px;
+}
+
+.post-card h3 {
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.post-card p {
+    margin-bottom: 12px;
+    color: #666;
+}
+
+/* ======================================= */
+/* FORMULARIOS (login/registro) */
+/* ======================================= */
+
+.form-container {
+    max-width: 420px;
+    margin: 50px auto;
+    background: var(--card);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 7px 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+/* ======================================= */
+/* ADMIN PANEL */
+/* ======================================= */
+
+.admin-table {
+    width: 100%;
+    background: var(--card);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 20px;
+}
+
+.admin-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th, .admin-table td {
+    border-bottom: 1px solid var(--border);
+    padding: 12px 8px;
+}
+
+.actions a {
+    margin-right: 10px;
+}
+
+/* Editor */
+textarea {
+    width: 100%;
+    padding: 12px;
+    min-height: 300px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+}

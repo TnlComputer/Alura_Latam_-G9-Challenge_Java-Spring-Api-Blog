@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/blog.js"></script>
+</head>
+
+<body>
+
+  <header class="header">
+    <h1 class="logo">Panel de Edición</h1>
+    <nav class="nav">
+      <a href="editor.html">Nuevo Post</a>
+      <a href="/logout">Salir</a>
+    </nav>
+    <button id="themeToggle" class="theme-toggle"></button>
+  </header>
+
+  <div class="container admin-table">
+    <table>
+      <tr>
+        <th>Título</th>
+        <th>Acciones</th>
+      </tr>
+
+      <tr>
+        <td>Post de Ejemplo</td>
+        <td class="actions">
+          <a href="editor.html?id=1">Editar</a>
+          <a href="/delete?id=1">Eliminar</a>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+
+</body>
+
+</html>
