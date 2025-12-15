@@ -1,6 +1,3 @@
--- renombrar tabla
-RENAME TABLE post TO posts;
-
 -- agregar columnas nuevas
 ALTER TABLE posts
     ADD COLUMN title VARCHAR(255) NOT NULL AFTER id,

@@ -1,0 +1,97 @@
+/* =========================
+   ADMIN GENERAL
+========================= */
+
+.admin-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2.5rem 3rem;
+}
+
+/* Título */
+.admin-container h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+/* Cards del menú admin */
+.admin-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.admin-cards button,
+.admin-cards a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+
+  border-radius: 14px;
+  cursor: pointer;
+  text-decoration: none;
+
+  transition: all 0.25s ease;
+}
+
+.admin-cards button:hover,
+.admin-cards a:hover {
+  transform: translateY(-4px);
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Contenido dinámico */
+#adminContent {
+  margin-top: 2rem;
+}
+
+/* ============================= */
+/* ADMIN CARDS – LIGHT MODE */
+/* ============================= */
+[data-theme='light'] .admin-cards button,
+[data-theme='light'] .admin-cards a {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: all 0.25s ease;
+}
+
+/* LIGHT – HOVER */
+[data-theme='light'] .admin-cards button:hover,
+[data-theme='light'] .admin-cards a:hover {
+  background: var(--accent);
+  color: #111827;              /* ← TEXTO OSCURO */
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+}
+
+
+/* ============================= */
+/* ADMIN CARDS – DARK MODE */
+/* ============================= */
+[data-theme='dark'] .admin-cards button,
+[data-theme='dark'] .admin-cards a {
+  background: #1f2933;
+  color: #f9fafb;
+  border: 1px solid #374151;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s ease;
+}
+
+/* DARK – HOVER */
+[data-theme='dark'] .admin-cards button:hover,
+[data-theme='dark'] .admin-cards a:hover {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}

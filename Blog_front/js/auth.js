@@ -106,13 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
         roles.includes('ROLE_SUPER');
 
       const isCoordinator =
-        roles.includes('ROLE_COORDINATOR') ||
-        roles.includes('ROLE_ADMIN') ||
-        roles.includes('ROLE_SUPER');
+        roles.includes('ROLE_COORDINATOR') || roles.includes('ROLE_ADMIN') || roles.includes('ROLE_SUPER');
 
-      const isAdmin =
-        roles.includes('ROLE_ADMIN') ||
-        roles.includes('ROLE_SUPER');
+      const isAdmin = roles.includes('ROLE_ADMIN') || roles.includes('ROLE_SUPER');
 
       // ---- Blog (todos los usuarios logueados)
       if (isUser) {
@@ -129,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
           adminMenu.innerHTML = `<a href="admin/index.html">Panel Admin</a>`;
         }
       }
-
     } catch (e) {
       console.error('Error al leer roles del token:', e);
     }

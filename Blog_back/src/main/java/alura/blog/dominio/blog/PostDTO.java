@@ -1,6 +1,5 @@
 package alura.blog.dominio.blog;
 
-import alura.blog.dominio.usuario.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -26,7 +25,7 @@ public class PostDTO {
                 post.getTitle(),
                 post.getExcerpt(),
                 post.getContent(),
-                post.getCategory(),
+                post.getCategory().getName(),
                 post.getImageUrl(),
                 post.getCreatedAt(),
                 authorName

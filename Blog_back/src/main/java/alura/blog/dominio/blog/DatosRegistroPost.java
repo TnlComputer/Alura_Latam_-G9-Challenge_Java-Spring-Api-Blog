@@ -7,6 +7,6 @@ public record DatosRegistroPost(
         String content,
         @NotBlank(message = "El mensaje es obligatorio") String mensaje,
         String imageUrl,        // opcional
-        String category         // opcional, si no se envía usar "general"
+        Long categoryId        // opcional, si no se envía usar "general"
 ) {
 }

@@ -1,8 +1,8 @@
 package alura.blog.dominio.blog;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +19,8 @@ public class PostService {
 
     // -------------------- LISTAR TODOS LOS POSTS ACTIVOS --------------------
     public List<Post> findAllActive(int page, int size) {
-        return repository.findByActivoTrue(PageRequest.of(page, size)).toList();
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return repository.findAllActiveFiltered(null, null, pageable).getContent();
     }
 
     // -------------------- LISTAR TODOS LOS POSTS (SIN FILTRO) --------------------
@@ -38,11 +39,6 @@ public class PostService {
     }
 
     // -------------------- BORRAR POST (MARCAR ACTIVO = FALSE) --------------------
-    public void delete(Post post) {
-        post.eliminar();
-        repository.save(post);
-    }
-
     public void deleteById(Long id) {
         findById(id).ifPresent(post -> {
             post.eliminar();
@@ -50,5 +46,21 @@ public class PostService {
         });
     }
 
-}
+    // -------------------- LISTAR POSTS FILTRADOS --------------------
+    public List<Post> findAllActiveFiltered(int page, int size, Long authorId, String category, String sort) {
+        // Crear Pageable según sort recibido
+        Sort.Direction direction = Sort.Direction.DESC; // por defecto descendente
+        String property = "createdAt";
 
+        if (sort != null && sort.contains(",")) {
+            String[] sortParts = sort.split(",");
+            property = sortParts[0];
+            direction = sortParts[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, property));
+
+        // Usar solo la query personalizada
+        return repository.findAllActiveFiltered(authorId, category, pageable).getContent();
+    }
+}

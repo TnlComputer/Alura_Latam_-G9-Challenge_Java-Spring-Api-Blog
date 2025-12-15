@@ -1,0 +1,295 @@
+/* =========================
+   USERS ADMIN
+========================= */
+
+.users-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* ---------- FORM ---------- */
+.form-section {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+}
+
+.form-section h2 {
+  margin-bottom: 1.5rem;
+}
+
+.form-section label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-section input,
+.form-section select,
+.form-section textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  margin-top: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.form-section input:focus,
+.form-section select:focus,
+.form-section textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.form-section button {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 0.7rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.form-section button:hover {
+  opacity: 0.9;
+}
+
+/* ---------- TABLE ---------- */
+.table-section {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  overflow-x: auto;
+}
+
+.table-section h2 {
+  margin-bottom: 1.5rem;
+}
+
+#userTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+
+#userTable th,
+#userTable td {
+  padding: 1rem;
+  text-align: left;
+  font-size: 1rem;
+  border-bottom: none;
+}
+
+#userTable th {
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+#userTable tbody tr {
+  background: var(--card-bg);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border-radius: 8px;
+}
+
+#userTable tr:hover {
+  background: var(--hover-bg);
+}
+
+/* Roles badges */
+.role-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+  margin-right: 0.2rem;
+}
+
+.role-user { background: #1976d2; }
+.role-admin { background: #d32f2f; }
+.role-super { background: #9c27b0; }
+.role-coordinator { background: #f57c00; }
+
+/* Estado activo/inactivo */
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.status-active { background: #4caf50; }
+.status-inactive { background: #f44336; }
+
+/* ---------- ACCIONES COLAPSADAS ---------- */
+.actions-cell {
+  position: relative;
+}
+
+.actions-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.actions-btn {
+  padding: 0.5rem 0.8rem; /* más grande */
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.1rem; /* tamaño más grande */
+}
+
+.actions-btn:hover {
+  opacity: 0.9;
+}
+
+.actions-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  padding: 0.5rem 0;
+  min-width: 140px; /* más ancho */
+  z-index: 10;
+}
+
+.actions-dropdown:hover .actions-menu {
+  display: block;
+}
+
+.actions-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem; /* más grande */
+  font-size: 1rem; /* tamaño más grande */
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.actions-menu button.edit {
+  color: #1976d2;
+}
+.actions-menu button.edit:hover {
+  color: #1565c0;
+  background: rgba(25, 118, 210, 0.1); /* feedback hover */
+}
+
+.actions-menu button.delete {
+  color: #d32f2f;
+}
+.actions-menu button.delete:hover {
+  color: #b71c1c;
+  background: rgba(211, 47, 47, 0.1);
+}
+
+/* Dark mode */
+[data-theme='dark'] .actions-menu {
+  background: #2b2b2b;
+}
+
+[data-theme='dark'] .actions-menu button.edit:hover {
+  color: #90caf9;
+  background: rgba(144, 202, 249, 0.1);
+}
+[data-theme='dark'] .actions-menu button.delete:hover {
+  color: #ef9a9a;
+  background: rgba(239, 154, 154, 0.1);
+}
+
+
+/* ---------- DARK MODE ---------- */
+[data-theme='dark'] .form-section,
+[data-theme='dark'] .table-section {
+  background: #1e1e1e;
+  color: #e0e0e0;
+}
+
+[data-theme='dark'] .form-section label {
+  color: #e0e0e0;
+}
+
+[data-theme='dark'] .form-section input,
+[data-theme='dark'] .form-section select,
+[data-theme='dark'] .form-section textarea {
+  background-color: #2b2b2b;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+
+[data-theme='dark'] .form-section input:focus,
+[data-theme='dark'] .form-section select:focus,
+[data-theme='dark'] .form-section textarea:focus {
+  border-color: #90caf9;
+  box-shadow: 0 0 0 2px rgba(144, 202, 249, 0.4);
+}
+
+[data-theme='dark'] #userTable tbody button.edit:hover {
+  color: #90caf9;
+}
+
+[data-theme='dark'] #userTable tbody button.delete:hover {
+  color: #ef9a9a;
+}
+
+[data-theme='dark'] .actions-menu {
+  background: #2b2b2b;
+}
+
+/* ---------- PAGINACIÓN ---------- */
+#pagination {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+#pagination button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  margin: 0 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#pagination button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+/* Dark mode paginación */
+[data-theme='dark'] #pagination button:disabled {
+  background-color: #555;
+  color: #ccc;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1024px) {
+  .users-layout {
+    grid-template-columns: 1fr;
+  }
+
+  #userTable th, #userTable td {
+    padding: 0.8rem;
+  }
+}

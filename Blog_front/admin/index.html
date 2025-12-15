@@ -4,10 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <title>Panel Admin</title>
-  <link rel="stylesheet" href="../css/admin.css">
-  <link rel="stylesheet" href="../css/style.css">
+
+    <!-- CSS -->
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="./css/admin.css">
+<link rel="stylesheet" href="./css/users.css">
+<link rel="stylesheet" href="./css/posts.css">
+
+    
+  <!-- JS -->
   <script defer src="../js/themes.js"></script>
-  <script defer src="../js/admin.js"></script>
+  <script defer src="js/admin.js"></script>
   <script defer src="../js/auth.js"></script>
 </head>
 
@@ -15,9 +22,9 @@
 
   <header>
     <nav id="mainMenu">
-      <a href="index.html">Inicio</a>
-      <a href="blog.html">Blog</a>
-      <span id="adminMenu"></span>
+      <a href="../index.html">Inicio</a>
+      <!-- <a href="blog.html">Blog</a>
+      <span id="adminMenu"></span> -->
     </nav>
 
     <div class="auth-theme-container">
@@ -31,15 +38,18 @@
     </div>
   </header>
 
-  <main class="container wide">
-    <h2>Panel de Administración</h2>
+  <main class="admin-container">
+  <h2>Panel de Administración</h2>
 
-    <div class="admin-cards">
-      <a href="users.html" class="card">Usuarios</a>
-      <a href="posts.html" class="card">Clases</a>
-      <a href="../blog.html" class="card">Ver Blog</a>
-    </div>
-  </main>
+  <div class="admin-cards">
+    <button data-view="users">Usuarios</button>
+    <button data-view="posts">Posts</button>
+    <button onclick="window.location.href='../blog.html'">Ver Blog</button>
+  </div>
+
+  <!-- CONTENIDO DINÁMICO -->
+  <section id="adminContent"></section>
+</main>
 
 </body>
 

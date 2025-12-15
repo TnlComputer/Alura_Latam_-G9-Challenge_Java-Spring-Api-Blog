@@ -4,12 +4,12 @@ import alura.blog.dominio.blog.DatosRegistroPost;
 import alura.blog.dominio.blog.Post;
 import alura.blog.dominio.blog.PostDTO;
 import alura.blog.dominio.blog.PostService;
+import alura.blog.dominio.category.Category;
+import alura.blog.dominio.category.CategoryService;
 import alura.blog.dominio.usuario.User;
 import alura.blog.dominio.usuario.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,19 +23,25 @@ public class PostController {
 
     private final PostService postService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
-    public PostController(PostService postService, UserService userService) {
+    public PostController(PostService postService, UserService userService, CategoryService categoryService) {
         this.postService = postService;
         this.userService = userService;
+        this.categoryService = categoryService;
     }
 
-    // -------------------- GET ALL --------------------
+
     @GetMapping
     public ResponseEntity<List<PostDTO>> getAllActive(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int size) {
+            @RequestParam(defaultValue = "0") int page,    // Paginación
+            @RequestParam(defaultValue = "6") int size,    // Tamaño de página
+            @RequestParam(required = false) Long authorId,  // Filtro por autor
+            @RequestParam(required = false) String category, // Filtro por categoría
+            @RequestParam(defaultValue = "createdAt,desc") String sort) { // Orden descendente
 
-        List<PostDTO> posts = postService.findAllActive(page, size)
+        // Llamar al servicio que maneja la consulta filtrada y paginada
+        List<PostDTO> posts = postService.findAllActiveFiltered(page, size, authorId, category, sort)
                 .stream()
                 .map(PostDTO::fromPost)
                 .toList();
@@ -54,27 +60,22 @@ public class PostController {
 
     // -------------------- CREATE --------------------
     @PostMapping
-    public ResponseEntity<Post> create(@RequestBody Post post,
+    public ResponseEntity<Post> create(@RequestBody DatosRegistroPost datos,
                                        @AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails == null) {
-            return ResponseEntity.status(401).build();
-        }
+        if (userDetails == null) return ResponseEntity.status(401).build();
 
         User author = userService.findByEmail(userDetails.getUsername());
-        if (author == null) {
-            return ResponseEntity.status(404).build();
-        }
+        if (author == null) return ResponseEntity.status(404).build();
 
+        // Buscar categoría
+        Category category = categoryService.findById(datos.categoryId())
+                .orElse(categoryService.findByName("general")
+                        .orElseThrow(() -> new RuntimeException("No existe categoría 'general'")));
+
+        Post post = new Post(datos, category);
         post.setAuthor(author);
-
-        // ⚡ Generar excerpt automáticamente si es null
-        if (post.getExcerpt() == null || post.getExcerpt().isEmpty()) {
-            String content = post.getContent() != null ? post.getContent() : "";
-            String excerpt = content.length() > 100 ? content.substring(0, 100) + "..." : content;
-            post.setExcerpt(excerpt);
-        }
-
         Post savedPost = postService.save(post);
+
         return ResponseEntity.ok(savedPost);
     }
 

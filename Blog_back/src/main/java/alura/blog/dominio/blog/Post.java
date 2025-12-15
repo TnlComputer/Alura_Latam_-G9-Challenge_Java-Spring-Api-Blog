@@ -1,5 +1,6 @@
 package alura.blog.dominio.blog;
 
+import alura.blog.dominio.category.Category;
 import alura.blog.dominio.usuario.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -35,8 +36,10 @@ public class Post {
 
     private String excerpt;
 
-    @Column(nullable = false)
-    private String category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Category category;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -58,13 +61,13 @@ public class Post {
     // ---------------------------
     // Constructor con DatosRegistroPost
     // ---------------------------
-    public Post(DatosRegistroPost datos){
+    public Post(DatosRegistroPost datos, Category category) {
         this.title = datos.title();
         this.content = datos.content();
         this.excerpt = generarExcerpt(datos.content());
         this.mensaje = datos.mensaje();
         this.imageUrl = datos.imageUrl();
-        this.category = datos.category() != null ? datos.category() : "general";
+        this.category = category;
         this.activo = true;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
