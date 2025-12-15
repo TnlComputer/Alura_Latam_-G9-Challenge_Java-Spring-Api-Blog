@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Post | Blog Tech</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/crear-post.css">
+
+  <!-- JS -->
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/themes.js"></script>
+  <script defer src="js/crear-post.js"></script>
+</head>
+
+<body>
+
+  <header>
+    <nav id="mainMenu">
+      <a href="index.html">Inicio</a>
+      <a href="blog.html">Blog</a>
+      <span id="adminMenu"></span>
+    </nav>
+
+    <div class="auth-theme-container">
+      <div id="authLinks">
+        <a id="loginLink" href="login.html">Iniciar sesión</a>
+        <a id="registerLink" href="register.html">Registrar</a>
+        <button id="logoutBtn">Cerrar sesión</button>
+      </div>
+      <button id="themeToggle" class="theme-toggle"></button>
+    </div>
+  </header>
+
+  <main class="home">
+    <section class="fade-in create-post-card">
+      <h2>Crear nuevo Post</h2>
+      <div class="category-display" id="categoryDisplay"></div>
+
+      <form id="create-post-form">
+
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="mensaje">Mensaje:</label>
+        <textarea id="mensaje" name="mensaje" required></textarea>
+
+        <label for="content">Contenido:</label>
+        <textarea id="content" name="content"></textarea>
+
+        <label for="imageUrl">URL de la imagen (opcional):</label>
+        <input type="text" id="imageUrl" name="imageUrl">
+
+        <button type="submit" class="btn-primary">Crear Post</button>
+      </form>
+
+      <div id="statusMessage"></div>
+    </section>
+  </main>
+
+</body>
+
+</html>

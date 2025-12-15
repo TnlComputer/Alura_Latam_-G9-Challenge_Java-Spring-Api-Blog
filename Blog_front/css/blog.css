@@ -1,0 +1,162 @@
+/* =========================
+   BLOG / LISTADO
+========================= */
+
+.blog {
+  max-width: 1440px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+/* =========================
+   HEADER BLOG
+========================= */
+
+.blog-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.blog-header h1 {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.blog-header p {
+  opacity: 0.8;
+}
+
+/* =========================
+   FILTROS
+========================= */
+
+.blog-filters {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+}
+
+.blog-filters input,
+.blog-filters select {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 15px;
+  min-width: 220px;
+}
+
+.blog-filters input:focus,
+.blog-filters select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* =========================
+   POSTS GRID
+========================= */
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+/* =========================
+   POST CARD
+========================= */
+
+.post-card {
+  background: var(--card);
+  padding: 25px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease;
+}
+
+.post-card h3 {
+  margin-bottom: 10px;
+}
+
+.post-card p {
+  opacity: 0.85;
+}
+
+/* Hover claro = “se puede clickear” */
+.post-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  border-color: var(--primary);
+}
+
+/* =========================
+   TAGS
+========================= */
+
+.tag {
+  margin-top: 16px;
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Colores light */
+.tag.backend { background: #e3f2ff; color: #0053c7; }
+.tag.data    { background: #e6f8ee; color: #0a7d3b; }
+.tag.devops  { background: #fff4e5; color: #c77700; }
+
+/* Dark mode */
+[data-theme="dark"] .tag.backend { background: #123252; color: #7ab6ff; }
+[data-theme="dark"] .tag.data    { background: #103d2b; color: #6be6a8; }
+[data-theme="dark"] .tag.devops  { background: #3a2a10; color: #ffd18a; }
+
+/* =========================
+   ANIMACIONES
+========================= */
+
+.fade-in {
+  animation: fadeIn .6s ease both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.delay-1 { animation-delay: .1s; }
+.delay-2 { animation-delay: .2s; }
+.delay-3 { animation-delay: .3s; }
+
+/* =========================
+   LOAD MORE
+========================= */
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.load-more-container button {
+  cursor: pointer;
+}

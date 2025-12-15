@@ -1,5 +1,7 @@
 package alura.blog.dominio.blog;
 
+import alura.blog.dominio.usuario.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -9,8 +11,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Table(name = "posteos")
 @Entity(name = "Post")
+@Table(name = "posts")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,7 +23,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Boolean activo;
+    private Boolean activo = true;
+
     private String mensaje;
 
     @NotBlank
@@ -32,24 +35,48 @@ public class Post {
 
     private String excerpt;
 
+    @Column(nullable = false)
+    private String category;
+
+    @Column(name = "image_url")
     private String imageUrl;
 
-    private LocalDateTime createdAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // ---------------------------
+    // Relación ManyToOne con User
+    // ---------------------------
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User author;
 
+    // ---------------------------
+    // Constructor con DatosRegistroPost
+    // ---------------------------
     public Post(DatosRegistroPost datos){
-        this.id = null;
-        this.activo = true;
+        this.title = datos.title();
+        this.content = datos.content();
+        this.excerpt = generarExcerpt(datos.content());
         this.mensaje = datos.mensaje();
+        this.imageUrl = datos.imageUrl();
+        this.category = datos.category() != null ? datos.category() : "general";
+        this.activo = true;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-//    public Post(DatosRegistroPost datos) {
-//        this.id = null;
-//        this.activo = true;
-//        this.mensaje = datos.mensaje();
+    private String generarExcerpt(String content) {
+        if (content == null) return "";
+        return content.length() > 100 ? content.substring(0, 100) + "..." : content;
+    }
 
     public void eliminar() {
         this.activo = false;
     }
 }
+

@@ -1,26 +1,48 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
+  <title>Post | Blog Tech</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
-  <script defer src="js/blog.js"></script>
+  <link rel="stylesheet" href="css/post.css">
+
+  <!-- JS -->
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/themes.js"></script>
+  <script defer src="js/post.js"></script>
 </head>
 
 <body>
 
-  <header class="header">
-    <h1 class="logo">Mi Blog Profesional</h1>
-    <button id="themeToggle" class="theme-toggle"></button>
+  <!-- ================= HEADER ================= -->
+  <header>
+    <nav id="mainMenu">
+      <a href="index.html">Inicio</a>
+      <a href="blog.html">Blog</a>
+      <span id="adminMenu"></span>
+    </nav>
+
+    <div class="auth-theme-container">
+      <div id="authLinks">
+        <a id="loginLink" href="login.html">Iniciar sesión</a>
+        <a id="registerLink" href="register.html">Registrar</a>
+        <button id="logoutBtn">Cerrar sesión</button>
+      </div>
+
+      <button id="themeToggle" class="theme-toggle"></button>
+    </div>
   </header>
 
-  <div class="container">
-    <h2>Título del Artículo</h2>
-    <p>Contenido del post completo…</p>
-
-    <a href="index.html">← Volver</a>
-  </div>
+  <!-- ================= MAIN ================= -->
+  <main class="post-detail fade-in">
+    <h1 id="postTitle">Cargando...</h1>
+    <p id="postDate"></p>
+    <div id="postContent">Espere mientras se carga el contenido del post.</div>
+    <img id="postImage" alt="" style="max-width:100%; margin-top:20px; display:none;">
+  </main>
 
 </body>
-
 </html>
+

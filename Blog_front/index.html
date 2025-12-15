@@ -1,39 +1,90 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <link rel="shortcut icon" href="favicon.png" type="image/png">
-    <link rel="stylesheet" href="css/style.css">
-    <script defer src="js/blog.js"></script>
+  <meta charset="UTF-8">
+  <title>Inicio | Blog Tech</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/home.css">
+
+  <!-- JS -->
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/themes.js"></script>
+  <!-- <script defer src="js/menu-active.js"></script> -->
+  <script defer src="js/index.js"></script>
 </head>
 
 <body>
 
-<header class="header">
-    <h1 class="logo">Mi Blog Profesional</h1>
-
-    <nav class="nav">
-        <a href="login.html">Login</a>
-        <a href="register.html">Registro</a>
+  <!-- ================= HEADER ================= -->
+  <header>
+    <nav id="mainMenu">
+      <a href="index.html">Inicio</a>
+      <a href="blog.html">Blog</a>
+      <span id="adminMenu"></span>
     </nav>
 
-    <button id="themeToggle" class="theme-toggle"></button>
-</header>
+    <div class="auth-theme-container">
+      <div id="authLinks">
+        <a id="loginLink" href="login.html">Iniciar sesión</a>
+        <a id="registerLink" href="register.html">Registrar</a>
+        <button id="logoutBtn">Cerrar sesión</button>
+      </div>
 
-<div class="container">
-    <div class="posts">
-
-        <div class="post-card">
-            <img src="image/logo_blog.png">
-            <div class="content">
-                <h3>Título del post</h3>
-                <p>Un breve resumen del artículo…</p>
-                <a href="post.html">Leer más →</a>
-            </div>
-        </div>
-
+      <button id="themeToggle" class="theme-toggle"></button>
     </div>
-</div>
+  </header>
+
+  <!-- ================= MAIN ================= -->
+  <main class="home">
+
+    <!-- HERO -->
+    <section class="hero fade-in">
+      <h1>Posts de Programación & Data</h1>
+      <p>
+        Explora posts, tutoriales y ejemplos prácticos de desarrollo y análisis de datos.
+      </p>
+      <a href="blog.html" class="btn-primary">Explorar posts</a>
+    </section>
+
+<!-- ================= CATEGORÍAS ================= -->
+<section class="categories fade-in delay-1">
+  <h2>Categorías</h2>
+
+  <div class="category-grid">
+    <div class="category-card clickable delay-1" data-category="programacion">
+      <h3>Programación</h3>
+      <p>Java, PHP, Python, JavaScript</p>
+    </div>
+
+    <div class="category-card clickable delay-2" data-category="backend">
+      <h3>Backend</h3>
+      <p>Spring Boot, Laravel, APIs, Seguridad</p>
+    </div>
+
+    <div class="category-card clickable delay-3" data-category="data">
+      <h3>Data & BI</h3>
+      <p>SQL, ETL, Looker, análisis de datos</p>
+    </div>
+
+    <div class="category-card clickable delay-3" data-category="devops">
+      <h3>DevOps</h3>
+      <p>Docker, Linux, automatización</p>
+    </div>
+  </div>
+</section>
+
+    <!-- ÚLTIMOS POSTS -->
+    <section class="latest-posts fade-in delay-2">
+      <h2>Últimos posts</h2>
+      <div class="posts-grid" id="postsContainer"></div>
+      <div style="text-align:center; margin-top:20px;">
+        <button id="loadMoreBtn" class="btn-primary">Cargar más</button>
+      </div>
+    </section>
+
+  </main>
 
 </body>
 </html>

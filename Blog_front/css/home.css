@@ -1,0 +1,152 @@
+/* =========================
+   HOME / INDEX
+========================= */
+
+.home {
+  max-width: 1440px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  background: linear-gradient(135deg, var(--primary), #0053c7);
+  color: #fff;
+  padding: 60px 40px;
+  border-radius: 16px;
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  margin-bottom: 15px;
+}
+
+.hero p {
+  font-size: 18px;
+  margin-bottom: 25px;
+}
+
+/* =========================
+   CATEGORÍAS
+========================= */
+
+.categories h2,
+.latest-posts h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+  margin-bottom: 70px;
+}
+
+.category-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 25px;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  border-color: var(--primary);
+}
+
+.category-card h3 {
+  margin-bottom: 10px;
+}
+
+/* =========================
+   ÚLTIMOS POSTS
+========================= */
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.post-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 25px;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+
+.post-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  border-color: var(--primary);
+}
+
+.post-card h3 {
+  margin-bottom: 10px;
+}
+
+.post-card a {
+  font-weight: 600;
+}
+
+/* =========================
+   CARDS CLICKABLES
+========================= */
+
+.clickable {
+  cursor: pointer;
+}
+
+/* =========================
+   ANIMACIONES
+========================= */
+
+.fade-in {
+  animation: fadeIn .6s ease both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.delay-1 { animation-delay: .1s; }
+.delay-2 { animation-delay: .2s; }
+.delay-3 { animation-delay: .3s; }
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 50px 20px;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .posts-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}

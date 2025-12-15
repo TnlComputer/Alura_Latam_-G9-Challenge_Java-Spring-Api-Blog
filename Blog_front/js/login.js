@@ -1,6 +1,6 @@
 const form = document.getElementById('loginForm');
 
-form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', async e => {
   e.preventDefault();
 
   const email = document.getElementById('email').value;
@@ -8,13 +8,8 @@ form.addEventListener('submit', async (e) => {
 
   const response = await fetch('http://localhost:8081/auth/login', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email,
-      password
-    })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
   });
 
   if (!response.ok) {
@@ -23,10 +18,14 @@ form.addEventListener('submit', async (e) => {
   }
 
   const data = await response.json();
-
-  // 🔐 guardar JWT
   localStorage.setItem('token', data.token);
 
-  alert('Login OK');
+  // Redirigir según rol (opcional)
+  const payload = JSON.parse(atob(data.token.split('.')[1]));
+  const roles = payload.roles || [];
+  if (roles.includes('ROLE_ADMIN') || roles.includes('ROLE_SUPER')) {
+    window.location.href = 'admin/index.html';
+  } else {
+    window.location.href = 'index.html';
+  }
 });
-

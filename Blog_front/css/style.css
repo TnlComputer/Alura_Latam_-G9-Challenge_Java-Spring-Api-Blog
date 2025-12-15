@@ -1,196 +1,188 @@
-/* ======================================= */
-/* VARIABLES DE COLOR (Light/Dark) */
-/* ======================================= */
+/* =========================
+   VARIABLES GLOBALES / THEME
+========================= */
 
 :root {
-    --bg: #f5f6fa;
-    --text: #222;
-    --card: #ffffff;
-    --primary: #0077ff;
-    --border: #dfe1e5;
+  --bg: #ffffff;
+  --text: #111111;
+  --card: #f4f4f4;
+  --border: #dddddd;
+  --primary: #0077ff;
+  --secondary: #111111;
 }
 
-/* DARK MODE */
 [data-theme="dark"] {
-    --bg: #1e1e1e;
-    --text: #f5f5f5;
-    --card: #222;
-    --primary: #4ea8ff;
-    --border: #444;
+  --bg: #0f0f0f;
+  --text: #f5f5f5;
+  --card: #1e1e1e;
+  --border: #333333;
+  --primary: #4da3ff;
+  --secondary: #f8f8f8;
 }
 
-/* ======================================= */
-/* RESET */
-/* ======================================= */
+/* =========================
+   RESET BÁSICO
+========================= */
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Inter", sans-serif;
+  box-sizing: border-box;
 }
 
 body {
-    background: var(--bg);
-    color: var(--text);
-    transition: .3s;
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
-a {
-    color: var(--primary);
-    text-decoration: none;
+/* =========================
+   LINKS GLOBALES
+========================= */
+
+a,
+a:visited {
+  color: var(--text);
+  text-decoration: none;
 }
 
-/* ======================================= */
-/* HEADER */
-/* ======================================= */
-
-.header {
-    padding: 18px 25px;
-    background: var(--card);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+a:hover {
+  text-decoration: none;
 }
 
-.logo {
-    font-size: 24px;
-    font-weight: 700;
+/* =========================
+   HEADER GLOBAL
+========================= */
+
+header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.nav a {
-    margin-left: 20px;
-    font-weight: 500;
+/* ---------- MENÚ ---------- */
+
+#mainMenu {
+  display: flex;
+  align-items: center;
+  gap: 24px;
 }
+
+#mainMenu a {
+  color: var(--text);
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background .2s, color .2s;
+}
+
+#mainMenu a:hover {
+  background: rgba(0, 119, 255, 0.12);
+}
+
+/* Link activo */
+#mainMenu a.active {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Admin destacado */
+#adminMenu a {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* ---------- AUTH + THEME ---------- */
+
+.auth-theme-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+#authLinks {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#authLinks a,
+#authLinks button {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 500;
+  transition: background .2s, border-color .2s;
+}
+
+#authLinks a:hover,
+#authLinks button:hover {
+  background: rgba(0, 119, 255, 0.08);
+  border-color: var(--primary);
+}
+
+/* =========================
+   BOTONES REUTILIZABLES
+========================= */
+
+.btn-primary {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: transform .2s, opacity .2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  opacity: .9;
+}
+
+/* =========================
+   CARDS REUTILIZABLES
+========================= */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  border-color: var(--primary);
+}
+
+/* =========================
+   THEME TOGGLE
+========================= */
 
 .theme-toggle {
-    cursor: pointer;
-    border: none;
-    background: var(--primary);
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 8px;
-}
-
-/* ======================================= */
-/* LISTA DE POSTS */
-/* ======================================= */
-
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 40px auto;
-}
-
-.posts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
-    gap: 25px;
-}
-
-.post-card {
-    background: var(--card);
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    transition: .2s;
-}
-
-.post-card:hover {
-    transform: translateY(-5px);
-}
-
-.post-card img {
-    width: 100%;
-}
-
-.post-card .content {
-    padding: 15px;
-}
-
-.post-card h3 {
-    font-size: 20px;
-    margin-bottom: 12px;
-}
-
-.post-card p {
-    margin-bottom: 12px;
-    color: #666;
-}
-
-/* ======================================= */
-/* FORMULARIOS (login/registro) */
-/* ======================================= */
-
-.form-container {
-    max-width: 420px;
-    margin: 50px auto;
-    background: var(--card);
-    padding: 30px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-}
-
-label {
-    display: block;
-    margin-top: 12px;
-}
-
-input {
-    width: 100%;
-    padding: 12px;
-    margin: 7px 0;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--bg);
-    color: var(--text);
-}
-
-.btn {
-    margin-top: 20px;
-    width: 100%;
-    padding: 12px;
-    background: var(--primary);
-    color: #fff;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-}
-
-/* ======================================= */
-/* ADMIN PANEL */
-/* ======================================= */
-
-.admin-table {
-    width: 100%;
-    background: var(--card);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    padding: 20px;
-}
-
-.admin-table table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.admin-table th, .admin-table td {
-    border-bottom: 1px solid var(--border);
-    padding: 12px 8px;
-}
-
-.actions a {
-    margin-right: 10px;
-}
-
-/* Editor */
-textarea {
-    width: 100%;
-    padding: 12px;
-    min-height: 300px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text);
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
 }

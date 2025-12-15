@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Blog | Blog Tech</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/blog.css">
+
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/themes.js"></script>
+  <script defer src="js/blog.js"></script>
+</head>
+
+<body>
+
+  <header>
+    <nav id="mainMenu">
+      <a href="index.html">Inicio</a>
+      <a href="blog.html" class="active">Blog</a>
+      <span id="adminMenu"></span>
+    </nav>
+
+    <div class="auth-theme-container">
+      <div id="authLinks">
+        <a id="loginLink" href="login.html">Iniciar sesión</a>
+        <a id="registerLink" href="register.html">Registrar</a>
+        <button id="logoutBtn">Cerrar sesión</button>
+      </div>
+
+      <button id="themeToggle" class="theme-toggle"></button>
+    </div>
+  </header>
+
+  <main class="blog">
+
+    <!-- ENCABEZADO -->
+    <section class="blog-header fade-in">
+      <h1>Post & Artículos</h1>
+      <p>Programación, Backend, Data & DevOps con ejemplos reales</p>
+    </section>
+
+    <!-- FILTROS -->
+    <section class="blog-filters fade-in delay-1">
+      <input type="text" id="searchInput" placeholder="Buscar clase..." aria-label="Buscar clase">
+
+      <select id="categoryFilter" aria-label="Filtrar por categoría">
+        <option value="">Todas las categorías</option>
+        <option value="programacion">Programación</option>
+        <option value="backend">Backend</option>
+        <option value="data">Data & BI</option>
+        <option value="devops">DevOps</option>
+      </select>
+    </section>
+
+    <!-- POSTS -->
+    <section class="posts-grid fade-in delay-2" id="postsContainer">
+
+      <!-- EJEMPLO DE CARD (JS luego las genera) -->
+      <article class="post-card clickable" data-id="1">
+        <h3>Introducción a Spring Security</h3>
+        <p>JWT, roles y autenticación paso a paso.</p>
+        <span class="tag backend">Backend</span>
+      </article>
+
+
+      <article class="post-card clickable" onclick="location.href='post.html'">
+        <h3>Análisis de ventas con SQL</h3>
+        <p>Consultas reales para reporting y BI.</p>
+        <span class="tag data">Data & BI</span>
+      </article>
+
+      <article class="post-card clickable" onclick="location.href='post.html'">
+        <h3>Docker desde cero</h3>
+        <p>Contenedores, imágenes y entornos reproducibles.</p>
+        <span class="tag devops">DevOps</span>
+      </article>
+
+
+    </section>
+
+    <!-- CARGAR MÁS -->
+    <div class="load-more-container fade-in delay-3">
+      <button id="loadMoreBtn" class="btn-primary">Cargar más</button>
+    </div>
+
+  </main>
+
+</body>
+
+</html>
