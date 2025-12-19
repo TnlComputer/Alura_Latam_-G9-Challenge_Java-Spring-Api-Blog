@@ -15,15 +15,17 @@
 
       <label>Roles</label>
       <select id="roles" required>
-        <option value="ROLE_USER">USER</option>
-        <option value="ROLE_ADMIN">ADMIN</option>
-        <option value="ROLE_SUPER">SUPER</option>
-        <option value="ROLE_COORDINATOR">COORDINATOR</option>
+        <option value="USER">USER</option>
+        <option value="ADMIN">ADMIN</option>
+        <option value="SUPER">SUPER</option>
+        <option value="COORDINATOR">COORDINADOR</option>
       </select>
 
-      <label class="checkbox">
-        <input type="checkbox" id="enabled" checked> Habilitado
-      </label>
+      <div class="checkbox-group">
+        <label for="enabled">Habilitado</label>
+        <input type="checkbox" id="enabled" checked />
+      </div>
+
 
       <button type="submit">Guardar</button>
     </form>

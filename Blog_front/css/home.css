@@ -1,16 +1,11 @@
 /* =========================
-   HOME / INDEX
+   HERO / HOME
 ========================= */
-
 .home {
   max-width: 1440px;
   margin: auto;
   padding: 40px 20px;
 }
-
-/* =========================
-   HERO
-========================= */
 
 .hero {
   background: linear-gradient(135deg, var(--primary), #0053c7);
@@ -32,121 +27,232 @@
 }
 
 /* =========================
-   CATEGORÍAS
+   CATEGORÍAS - WRAP RESPONSIVE
 ========================= */
-
-.categories h2,
-.latest-posts h2 {
-  font-size: 28px;
-  margin-bottom: 25px;
+/* Contenedor de categorías */
+.category-grid {
+  display: flex;
+  flex-wrap: wrap;        /* permite que las tarjetas pasen a otra línea */
+  gap: 16px;              /* espacio entre tarjetas */
+  justify-content: flex-start; /* alineación al inicio, puedes usar center si quieres centrado */
+  margin-bottom: 50px;
 }
 
-.category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 25px;
-  margin-bottom: 70px;
+/* Cada tarjeta */
+.category-card {
+  flex: 1 1 150px;        /* crece y se encoge, mínimo 150px */
+  max-width: 220px;       /* ancho máximo de la tarjeta */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+/* Responsive: tablets */
+@media (max-width: 1024px) {
+  .category-card {
+    flex: 1 1 120px;      /* se encogen un poco */
+  }
+}
+
+/* Responsive: móviles */
+@media (max-width: 768px) {
+  .category-card {
+    flex: 1 1 100px;      /* se encogen más */
+    padding: 10px;
+  }
+}
+
+
+.category-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary);
+}
+
+/* =========================
+   MEDIA QUERIES
+========================= */
+@media (max-width: 1024px) {
+  .category-card {
+    flex: 1 1 120px;         /* se encoge un poco en tablets */
+  }
+}
+
+@media (max-width: 768px) {
+  .category-card {
+    flex: 1 1 100px;         /* se encoge más en móviles */
+    padding: 10px;
+  }
 }
 
 .category-card {
+  position: relative;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 25px;
-  transition: transform .2s, box-shadow .2s, border-color .2s;
-}
-
-.category-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 30px rgba(0,0,0,.12);
-  border-color: var(--primary);
-}
-
-.category-card h3 {
-  margin-bottom: 10px;
-}
-
-/* =========================
-   ÚLTIMOS POSTS
-========================= */
-
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 25px;
-}
-
-.post-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 25px;
-  transition: transform .2s, box-shadow .2s, border-color .2s;
-}
-
-.post-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 30px rgba(0,0,0,.12);
-  border-color: var(--primary);
-}
-
-.post-card h3 {
-  margin-bottom: 10px;
-}
-
-.post-card a {
-  font-weight: 600;
-}
-
-/* =========================
-   CARDS CLICKABLES
-========================= */
-
-.clickable {
+  padding: 15px 15px 15px 30px;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
   cursor: pointer;
 }
 
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary);
+}
+
+.category-card h2 {
+  margin-bottom: 6px;
+  font-size: 1rem;
+}
+
+.category-card .category-tab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 100%;
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+
 /* =========================
-   ANIMACIONES
+   SEARCH HOME
 ========================= */
-
-.fade-in {
-  animation: fadeIn .6s ease both;
+.home-search {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0 40px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.home-search input {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 16px;
 }
 
-.delay-1 { animation-delay: .1s; }
-.delay-2 { animation-delay: .2s; }
-.delay-3 { animation-delay: .3s; }
+.home-search input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+
+/* =========================
+   POSTS
+========================= */
+.posts-grid {
+  display: block;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.post-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 20px 20px 50px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+.post-card .category-tab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 100%;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.post-card h3 {
+  font-size: 0.80rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.post-card p {
+  margin: 4px 0;
+  font-size: 045rem;
+}
 
 /* =========================
    RESPONSIVE
 ========================= */
-
 @media (max-width: 768px) {
   .hero {
     padding: 50px 20px;
   }
 
   .hero h1 {
-    font-size: 30px;
+    font-size: 20px;
   }
 
-  .category-grid {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  .category-card {
+    padding: 12px 12px 12px 25px;
   }
 
-  .posts-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  .category-card .category-tab {
+    width: 6px;
   }
+
+  .post-card {
+    padding: 15px 15px 15px 45px;
+  }
+
+  .post-card .category-tab {
+    width: 6px;
+  }
+}
+
+
+/* Botones de acción en el post */
+.post-card {
+  position: relative;
+}
+
+.post-card .post-actions {
+  display: none;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  gap: 5px;
+}
+
+.post-card:hover .post-actions {
+  display: flex;
+}
+
+
+.post-card .post-actions button {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  border-radius: 6px;
+  border: none;
+  background-color: var(--primary);
+  color: #fff;
+  transition: background 0.2s;
+}
+
+.post-card .post-actions button:hover {
+  background-color: #0053c7;
 }

@@ -26,15 +26,19 @@ public class Post {
 
     private Boolean activo = true;
 
+    @Column(columnDefinition = "TEXT")
     private String mensaje;
 
     @NotBlank
     private String title;
 
-    @Column(columnDefinition = "TEXT")
-    private String content;
+//    private String content;
 
     private String excerpt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PostStatus status = PostStatus.ABIERTO;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -63,19 +67,23 @@ public class Post {
     // ---------------------------
     public Post(DatosRegistroPost datos, Category category) {
         this.title = datos.title();
-        this.content = datos.content();
-        this.excerpt = generarExcerpt(datos.content());
         this.mensaje = datos.mensaje();
+        this.excerpt = generarExcerpt(datos.mensaje());
         this.imageUrl = datos.imageUrl();
         this.category = category;
+        this.status = PostStatus.ABIERTO;
         this.activo = true;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    private String generarExcerpt(String content) {
-        if (content == null) return "";
-        return content.length() > 100 ? content.substring(0, 100) + "..." : content;
+    private String generarExcerpt(String mensaje) {
+        if (mensaje == null) return "";
+        return mensaje.length() > 100 ? mensaje.substring(0, 100) + "..." : mensaje;
+    }
+
+    public boolean isActivo() {
+        return Boolean.TRUE.equals(this.activo);
     }
 
     public void eliminar() {

@@ -1,14 +1,51 @@
 (() => {
   const form = document.getElementById('create-post-form');
   const statusMessage = document.getElementById('statusMessage');
-  const categoryDisplay = document.getElementById('categoryDisplay');
+  const categorySelect = document.getElementById('categorySelect');
+
+  const BACKEND = 'http://localhost:8081';
 
   // ---------------------------
-  // Obtener categoría desde la URL
+  // Verificar login
   // ---------------------------
-  const urlParams = new URLSearchParams(window.location.search);
-  const category = urlParams.get('cat') || 'general';
-  categoryDisplay.textContent = `Categoría: ${category}`;
+  const token = localStorage.getItem('token');
+  if (!token) {
+    statusMessage.textContent = 'Debes iniciar sesión para crear un post.';
+    statusMessage.style.color = 'red';
+    form.style.display = 'none';
+    return;
+  }
+
+  // ---------------------------
+  // Cargar categorías
+  // ---------------------------
+  async function cargarCategorias() {
+    try {
+      const res = await fetch(`${BACKEND}/api/categories`, {
+        headers: {Authorization: `Bearer ${token}`}
+      });
+
+      if (!res.ok) throw new Error('Error al cargar categorías');
+
+      const categorias = await res.json();
+      categorySelect.innerHTML = '';
+
+      categorias.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.id;
+        option.textContent = cat.name;
+        categorySelect.appendChild(option);
+      });
+    } catch (err) {
+      console.error(err);
+      const option = document.createElement('option');
+      option.textContent = 'No se pudieron cargar las categorías';
+      option.disabled = true;
+      categorySelect.appendChild(option);
+    }
+  }
+
+  cargarCategorias();
 
   // ---------------------------
   // Enviar formulario
@@ -19,8 +56,8 @@
 
     const title = document.getElementById('title').value.trim();
     const mensaje = document.getElementById('mensaje').value.trim();
-    const content = document.getElementById('content').value.trim();
     const imageUrl = document.getElementById('imageUrl').value.trim() || '';
+    const categoryId = parseInt(categorySelect.value) || null;
 
     if (!title || !mensaje) {
       statusMessage.textContent = 'Título y mensaje son obligatorios.';
@@ -28,15 +65,10 @@
       return;
     }
 
-    const payload = {title, mensaje, content, imageUrl, category};
+    const payload = {title, mensaje, imageUrl, categoryId};
 
     try {
-      // ---------------------------
-      // Obtener el token JWT del login
-      // ---------------------------
-      const token = localStorage.getItem('token'); // asegúrate de guardar el token al hacer login
-      if (!token) throw new Error('No se encontró token de autenticación');
-
+      console.log(token);
       const response = await fetch('http://localhost:8081/api/posts', {
         method: 'POST',
         headers: {
@@ -46,13 +78,22 @@
         body: JSON.stringify(payload)
       });
 
+      if (response.status === 401) {
+        console.log(response);
+        throw new Error('No autorizado. Verifica tu sesión.');
+      }
+
       if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`Error al crear el post: ${errText}`);
+        let errorText;
+        try {
+          errorText = JSON.stringify(await response.json());
+        } catch {
+          errorText = await response.text();
+        }
+        throw new Error(errorText || response.statusText);
       }
 
       const createdPost = await response.json();
-
       statusMessage.textContent = `Post creado correctamente! ID: ${createdPost.id}`;
       statusMessage.style.color = 'green';
       form.reset();

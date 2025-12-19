@@ -1,7 +1,6 @@
 /* =========================
    VARIABLES GLOBALES / THEME
 ========================= */
-
 :root {
   --bg: #ffffff;
   --text: #111111;
@@ -23,99 +22,39 @@
 /* =========================
    RESET BÁSICO
 ========================= */
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-}
+* { box-sizing: border-box; margin:0; padding:0; }
+body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
 
 /* =========================
    LINKS GLOBALES
 ========================= */
-
-a,
-a:visited {
-  color: var(--text);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: none;
-}
+a, a:visited { color: var(--text); text-decoration: none; }
+a:hover { text-decoration: none; }
 
 /* =========================
    HEADER GLOBAL
 ========================= */
-
 header {
   background: var(--card);
   border-bottom: 1px solid var(--border);
   padding: 14px 24px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
-/* ---------- MENÚ ---------- */
+#mainMenu { display: flex; align-items: center; gap: 24px; }
+#mainMenu a { color: var(--text); font-weight: 500; padding: 6px 12px; border-radius: 8px; transition: background .2s, color .2s; }
+#mainMenu a:hover { background: rgba(0,119,255,.12); }
+#mainMenu a.active { background: var(--primary); color:#fff; font-weight:600; }
+#adminMenu a { font-weight:700; color: var(--primary); }
 
-#mainMenu {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-#mainMenu a {
-  color: var(--text);
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 8px;
-  transition: background .2s, color .2s;
-}
-
-#mainMenu a:hover {
-  background: rgba(0, 119, 255, 0.12);
-}
-
-/* Link activo */
-#mainMenu a.active {
-  background: var(--primary);
-  color: #fff;
-  font-weight: 600;
-}
-
-/* Admin destacado */
-#adminMenu a {
-  font-weight: 700;
-  color: var(--primary);
-}
-
-/* ---------- AUTH + THEME ---------- */
-
-.auth-theme-container {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-#authLinks {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-#authLinks a,
-#authLinks button {
+.auth-theme-container { display: flex; align-items: center; gap: 14px; }
+#authLinks { display: flex; align-items: center; gap:10px; }
+#authLinks a, #authLinks button {
   background: transparent;
   border: 1px solid var(--border);
   padding: 6px 14px;
@@ -125,57 +64,7 @@ header {
   font-weight: 500;
   transition: background .2s, border-color .2s;
 }
-
-#authLinks a:hover,
-#authLinks button:hover {
-  background: rgba(0, 119, 255, 0.08);
-  border-color: var(--primary);
-}
-
-/* =========================
-   BOTONES REUTILIZABLES
-========================= */
-
-.btn-primary {
-  display: inline-block;
-  background: var(--primary);
-  color: #fff;
-  padding: 12px 22px;
-  border-radius: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  transition: transform .2s, opacity .2s;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  opacity: .9;
-}
-
-/* =========================
-   CARDS REUTILIZABLES
-========================= */
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
-  transition:
-    transform .2s ease,
-    box-shadow .2s ease,
-    border-color .2s ease;
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 30px rgba(0,0,0,.12);
-  border-color: var(--primary);
-}
-
-/* =========================
-   THEME TOGGLE
-========================= */
+#authLinks a:hover, #authLinks button:hover { background: rgba(0,119,255,.08); border-color: var(--primary); }
 
 .theme-toggle {
   border: none;
@@ -186,3 +75,30 @@ header {
   cursor: pointer;
   font-weight: 600;
 }
+
+/* =========================
+   BOTONES
+========================= */
+.btn-primary {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: transform .2s, opacity .2s;
+}
+.btn-primary:hover { transform: translateY(-2px); opacity:.9; }
+
+/* =========================
+   CARDS GENERALES
+========================= */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.card:hover { transform: translateY(-6px); box-shadow: 0 10px 30px rgba(0,0,0,.12); border-color: var(--primary); }

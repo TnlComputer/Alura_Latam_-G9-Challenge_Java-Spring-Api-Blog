@@ -1,7 +1,7 @@
 (() => {
   const postTitle = document.getElementById('postTitle');
   const postDate = document.getElementById('postDate');
-  const postContent = document.getElementById('postContent');
+  const postMensaje = document.getElementById('postMensaje');
   const postImage = document.getElementById('postImage');
 
   // Obtener id de la URL
@@ -10,7 +10,7 @@
 
   if (!id) {
     postTitle.textContent = 'Post no encontrado';
-    postContent.textContent = 'No se especificó un ID válido.';
+    postMensaje.textContent = 'No se especificó un ID válido.';
     return;
   }
 
@@ -30,14 +30,14 @@
     } catch (err) {
       console.error(err);
       postTitle.textContent = 'Error al cargar el post';
-      postContent.textContent = 'No se pudo obtener la información del post.';
+      postMensaje.textContent = 'No se pudo obtener la información del post.';
     }
   }
 
   function renderPost(post) {
     postTitle.textContent = post.title;
     postDate.textContent = new Date(post.createdAt).toLocaleDateString();
-    postContent.textContent = post.content;
+    postMensaje.textContent = post.mensaje;
     if (post.imageUrl) postImage.src = post.imageUrl;
   }
 

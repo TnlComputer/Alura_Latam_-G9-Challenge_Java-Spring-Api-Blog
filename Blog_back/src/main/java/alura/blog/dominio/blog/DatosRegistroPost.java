@@ -4,9 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 
 public record DatosRegistroPost(
         @NotBlank(message = "El título es obligatorio") String title,
-        String content,
+//        String content,
         @NotBlank(message = "El mensaje es obligatorio") String mensaje,
-        String imageUrl,        // opcional
-        Long categoryId        // opcional, si no se envía usar "general"
-) {
-}
+        String imageUrl,
+        Long categoryId // puede ser null
+) { }

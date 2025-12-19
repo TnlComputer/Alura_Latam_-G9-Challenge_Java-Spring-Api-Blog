@@ -12,19 +12,20 @@
 /* ---------- FORM ---------- */
 .form-section {
   background: var(--card-bg);
-  padding: 2rem;
+  padding: 2.5rem; /* Formulario más grande */
   border-radius: 12px;
   box-shadow: var(--card-shadow);
 }
 
 .form-section h2 {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  font-size: 1.5rem; /* Título más grande */
 }
 
 .form-section label {
   display: block;
-  margin-top: 1rem;
-  font-weight: 500;
+  margin-top: 1.5rem;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
@@ -32,14 +33,14 @@
 .form-section select,
 .form-section textarea {
   width: 100%;
-  padding: 0.6rem 0.75rem;
-  margin-top: 0.4rem;
-  border-radius: 6px;
+  padding: 0.75rem 1rem; /* Campos más grandes */
+  margin-top: 0.5rem;
+  border-radius: 8px;
   border: 1px solid var(--border-color);
   background: var(--input-bg);
   color: var(--text-primary);
   box-sizing: border-box;
-  font-size: 1rem;
+  font-size: 1.125rem;
 }
 
 .form-section input:focus,
@@ -53,23 +54,47 @@
 .form-section button {
   margin-top: 1.5rem;
   width: 100%;
-  padding: 0.7rem;
+  padding: 1rem; /* Botón más grande */
   background: var(--accent);
   border: none;
   border-radius: 8px;
   color: #fff;
-  font-size: 1rem;
+  background-color: blue;
+  font-size: 1.125rem;
   cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para resaltar */
+  transition: all 0.2s ease;
 }
 
 .form-section button:hover {
   opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center; /* Alinea verticalmente label y checkbox */
+  gap: 0.3rem; /* Reduce el espacio entre label y checkbox */
+  margin-top: 1.5rem;
+}
+
+.checkbox-group label {
+  margin: 0; /* Quita márgenes que puedan empujar el checkbox */
+  font-weight: 500;
+  font-size: 1.125rem; /* Mismo tamaño que los inputs para uniformidad */
+  margin-top: 0.5rem;
+}
+
+.checkbox-group input[type='checkbox'] {
+  width: 1.25rem; /* Ajusta tamaño del checkbox si quieres más grande */
+  height: 1.25rem;
+  cursor: pointer;
 }
 
 /* ---------- TABLE ---------- */
 .table-section {
   background: var(--card-bg);
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: 12px;
   box-shadow: var(--card-shadow);
   overflow-x: auto;
@@ -77,6 +102,7 @@
 
 .table-section h2 {
   margin-bottom: 1.5rem;
+  font-size: 1.5rem;
 }
 
 #userTable {
@@ -100,7 +126,7 @@
 
 #userTable tbody tr {
   background: var(--card-bg);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
 }
 
@@ -119,10 +145,25 @@
   margin-right: 0.2rem;
 }
 
-.role-user { background: #1976d2; }
-.role-admin { background: #d32f2f; }
-.role-super { background: #9c27b0; }
-.role-coordinator { background: #f57c00; }
+.role-user {
+  background: #1976d2;
+}
+.role-admin {
+  background: #d32f2f;
+}
+.role-super {
+  background: #9c27b0;
+}
+.role-coordinator {
+  background: #f57c00;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem; /* Más pegado */
+  margin-top: 1.5rem;
+}
 
 /* Estado activo/inactivo */
 .status-dot {
@@ -133,8 +174,12 @@
   margin-right: 0.5rem;
 }
 
-.status-active { background: #4caf50; }
-.status-inactive { background: #f44336; }
+.status-active {
+  background: #4caf50;
+}
+.status-inactive {
+  background: #f44336;
+}
 
 /* ---------- ACCIONES COLAPSADAS ---------- */
 .actions-cell {
@@ -147,13 +192,13 @@
 }
 
 .actions-btn {
-  padding: 0.5rem 0.8rem; /* más grande */
+  padding: 0.5rem 0.8rem;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   background: var(--accent);
   color: #fff;
-  font-size: 1.1rem; /* tamaño más grande */
+  font-size: 1.1rem;
 }
 
 .actions-btn:hover {
@@ -167,9 +212,9 @@
   top: 100%;
   background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   padding: 0.5rem 0;
-  min-width: 140px; /* más ancho */
+  min-width: 140px;
   z-index: 10;
 }
 
@@ -180,8 +225,8 @@
 .actions-menu button {
   display: block;
   width: 100%;
-  padding: 0.6rem 1rem; /* más grande */
-  font-size: 1rem; /* tamaño más grande */
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
   border: none;
   background: none;
   text-align: left;
@@ -194,7 +239,7 @@
 }
 .actions-menu button.edit:hover {
   color: #1565c0;
-  background: rgba(25, 118, 210, 0.1); /* feedback hover */
+  background: rgba(25, 118, 210, 0.1);
 }
 
 .actions-menu button.delete {
@@ -218,7 +263,6 @@
   color: #ef9a9a;
   background: rgba(239, 154, 154, 0.1);
 }
-
 
 /* ---------- DARK MODE ---------- */
 [data-theme='dark'] .form-section,
@@ -260,15 +304,15 @@
 
 /* ---------- PAGINACIÓN ---------- */
 #pagination {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   text-align: center;
 }
 
 #pagination button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  margin: 0 0.5rem;
-  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+  margin: 0 0.75rem;
+  border-radius: 8px;
   cursor: pointer;
 }
 
@@ -289,7 +333,8 @@
     grid-template-columns: 1fr;
   }
 
-  #userTable th, #userTable td {
+  #userTable th,
+  #userTable td {
     padding: 0.8rem;
   }
 }

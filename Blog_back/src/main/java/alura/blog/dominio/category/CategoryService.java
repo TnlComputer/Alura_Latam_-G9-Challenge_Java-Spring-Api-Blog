@@ -1,6 +1,8 @@
 package alura.blog.dominio.category;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,4 +25,9 @@ public class CategoryService {
     public Category save(Category category) {
         return repository.save(category);
     }
+
+    public List<Category> findAll() {
+        return repository.findAll();
+    }
+
 }

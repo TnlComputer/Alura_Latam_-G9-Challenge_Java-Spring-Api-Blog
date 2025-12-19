@@ -8,8 +8,8 @@ form.addEventListener('submit', async e => {
 
   const response = await fetch('http://localhost:8081/auth/login', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email, password})
   });
 
   if (!response.ok) {
@@ -23,7 +23,7 @@ form.addEventListener('submit', async e => {
   // Redirigir según rol (opcional)
   const payload = JSON.parse(atob(data.token.split('.')[1]));
   const roles = payload.roles || [];
-  if (roles.includes('ROLE_ADMIN') || roles.includes('ROLE_SUPER')) {
+  if (roles.includes('ADMIN') || roles.includes('SUPER')) {
     window.location.href = 'admin/index.html';
   } else {
     window.location.href = 'index.html';

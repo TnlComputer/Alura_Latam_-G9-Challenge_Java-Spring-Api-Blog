@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
   <title>Inicio | Blog Tech</title>
@@ -21,8 +22,9 @@
   <header>
     <nav id="mainMenu">
       <a href="index.html">Inicio</a>
-      <a href="blog.html">Blog</a>
+      <!-- <a href="blog.html">Blog</a> -->
       <span id="adminMenu"></span>
+       <button id="btnCrearPost" style="margin-left: 15px;">Crear Post</button>
     </nav>
 
     <div class="auth-theme-container">
@@ -45,40 +47,26 @@
       <p>
         Explora posts, tutoriales y ejemplos prácticos de desarrollo y análisis de datos.
       </p>
-      <a href="blog.html" class="btn-primary">Explorar posts</a>
+      <!-- <a href="#postsContainer" class="btn-primary">Explorar posts</a> -->
     </section>
 
-<!-- ================= CATEGORÍAS ================= -->
-<section class="categories fade-in delay-1">
-  <h2>Categorías</h2>
+    <!-- ================= CATEGORÍAS ================= -->
+    <section class="categories fade-in delay-1">
+      <h2>Categorías</h2>
+      <div class="category-grid" id="categoriesContainer">
+        <!-- Aquí se generarán las categorías dinámicamente -->
+      </div>
+    </section>
 
-  <div class="category-grid">
-    <div class="category-card clickable delay-1" data-category="programacion">
-      <h3>Programación</h3>
-      <p>Java, PHP, Python, JavaScript</p>
-    </div>
-
-    <div class="category-card clickable delay-2" data-category="backend">
-      <h3>Backend</h3>
-      <p>Spring Boot, Laravel, APIs, Seguridad</p>
-    </div>
-
-    <div class="category-card clickable delay-3" data-category="data">
-      <h3>Data & BI</h3>
-      <p>SQL, ETL, Looker, análisis de datos</p>
-    </div>
-
-    <div class="category-card clickable delay-3" data-category="devops">
-      <h3>DevOps</h3>
-      <p>Docker, Linux, automatización</p>
-    </div>
-  </div>
-</section>
+    <!-- ================= SEARCH ================= -->
+    <section class="home-search fade-in delay-2">
+      <input type="text" id="searchInput" placeholder="Buscar posts..." aria-label="Buscar posts" />
+    </section>
 
     <!-- ÚLTIMOS POSTS -->
     <section class="latest-posts fade-in delay-2">
       <h2>Últimos posts</h2>
-      <div class="posts-grid" id="postsContainer"></div>
+      <div class="posts-grid" id="postsContainer"> <!-- Aquí se generarán los posts dinámicamente --></div>
       <div style="text-align:center; margin-top:20px;">
         <button id="loadMoreBtn" class="btn-primary">Cargar más</button>
       </div>
@@ -87,4 +75,5 @@
   </main>
 
 </body>
+
 </html>

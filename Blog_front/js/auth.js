@@ -100,15 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const roles = payload.roles || [];
 
       const isUser =
-        roles.includes('ROLE_USER') ||
-        roles.includes('ROLE_COORDINATOR') ||
-        roles.includes('ROLE_ADMIN') ||
-        roles.includes('ROLE_SUPER');
+        roles.includes('USER') ||
+        roles.includes('COORDINATOR') ||
+        roles.includes('ADMIN') ||
+        roles.includes('SUPER');
 
       const isCoordinator =
-        roles.includes('ROLE_COORDINATOR') || roles.includes('ROLE_ADMIN') || roles.includes('ROLE_SUPER');
+        roles.includes('COORDINATOR') || roles.includes('ADMIN') || roles.includes('SUPER');
 
-      const isAdmin = roles.includes('ROLE_ADMIN') || roles.includes('ROLE_SUPER');
+      const isAdmin = roles.includes('ADMIN') || roles.includes('SUPER');
 
       // ---- Blog (todos los usuarios logueados)
       if (isUser) {

@@ -1,13 +1,9 @@
 <select id="filterCategory">
   <option value="">Todas las categorías</option>
-  <option value="java">Java</option>
-  <option value="spring">Spring</option>
 </select>
 
 <select id="filterAuthor">
   <option value="">Todos los autores</option>
-  <option value="jorge@mail.com">Jorge</option>
-  <option value="ana@mail.com">Ana</option>
 </select>
 
 <table id="postsTable">
@@ -15,10 +11,13 @@
     <tr>
       <th>ID</th>
       <th>Título</th>
-      <th>Fecha</th>
+      <th>Mensaje</th>
+      <th>Autor ID</th>
+      <th>Categoría</th>
+      <th>Creado</th>
+      <th>Actualizado</th>
+      <th>Activo</th>
       <th>Acciones</th>
-      <td>
-      </td>
     </tr>
   </thead>
   <tbody>
@@ -29,5 +28,29 @@
   <button id="prevPage" onclick="prevPage()">Anterior</button>
   <button id="nextPage" onclick="nextPage()">Siguiente</button>
 </div>
+
+<!-- ===============================
+     MODAL EDITAR POST
+================================ -->
+<div id="editModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Editar Post</h3>
+
+    <label>Título</label>
+    <input type="text" id="editTitle">
+
+    <label>Mensaje</label>
+    <textarea id="editMensaje" rows="6"></textarea>
+
+    <label>Categoría</label>
+    <select id="editCategory"></select>
+
+    <div class="modal-actions">
+      <button id="saveEdit">Guardar</button>
+      <button id="cancelEdit">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 
 

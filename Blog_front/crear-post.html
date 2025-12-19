@@ -20,7 +20,6 @@
   <header>
     <nav id="mainMenu">
       <a href="index.html">Inicio</a>
-      <a href="blog.html">Blog</a>
       <span id="adminMenu"></span>
     </nav>
 
@@ -37,21 +36,29 @@
   <main class="home">
     <section class="fade-in create-post-card">
       <h2>Crear nuevo Post</h2>
-      <div class="category-display" id="categoryDisplay"></div>
 
       <form id="create-post-form">
+        <!-- Categoría -->
+        <label for="categorySelect">Categoría:</label>
+        <select id="categorySelect" required>
+          <option value="">Cargando categorías...</option>
+        </select>
 
+        <!-- Título -->
         <label for="title">Título:</label>
-        <input type="text" id="title" name="title" required>
+        <input type="text" id="title" name="title" placeholder="Escribe el título del post" required>
 
+        <!-- Mensaje -->
         <label for="mensaje">Mensaje:</label>
-        <textarea id="mensaje" name="mensaje" required></textarea>
+        <textarea id="mensaje" name="mensaje" placeholder="Mensaje breve" required></textarea>
 
-        <label for="content">Contenido:</label>
-        <textarea id="content" name="content"></textarea>
+        <!-- Contenido opcional -->
+        <!-- <label for="content">Contenido:</label>
+        <textarea id="content" name="content" placeholder="Contenido detallado del post (opcional)"></textarea> -->
 
+        <!-- Imagen opcional -->
         <label for="imageUrl">URL de la imagen (opcional):</label>
-        <input type="text" id="imageUrl" name="imageUrl">
+        <input type="text" id="imageUrl" name="imageUrl" placeholder="https://example.com/imagen.jpg">
 
         <button type="submit" class="btn-primary">Crear Post</button>
       </form>

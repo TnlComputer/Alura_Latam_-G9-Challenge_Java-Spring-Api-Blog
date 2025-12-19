@@ -23,7 +23,7 @@ window.initUsers = function () {
   }
 
   let currentPage = 0;
-  const pageSize = 6; // usuarios por página
+  const pageSize = 10;
 
   // --------------------
   // LOGOUT
@@ -34,24 +34,29 @@ window.initUsers = function () {
   });
 
   // --------------------
-  // CARGAR USUARIOS
+  // CARGAR USUARIOS (PAGINADO)
   // --------------------
   async function cargarUsuarios() {
     try {
-      const res = await fetch(`http://localhost:8081/admin/users?page=${currentPage}&size=${pageSize}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const res = await fetch(
+        `http://localhost:8081/admin/users?page=${currentPage}&size=${pageSize}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      });
+      );
 
       if (!res.ok) {
         alert('Error al cargar usuarios');
         return;
       }
 
-      const usuarios = await res.json();
-      renderizarUsuarios(usuarios);
-      renderPagination(usuarios.length);
+      const pageData = await res.json();
+
+      renderizarUsuarios(pageData.content);
+      renderPagination(pageData);
+
     } catch (e) {
       console.error(e);
     }
@@ -72,30 +77,25 @@ window.initUsers = function () {
         <td>${u.roles.join(', ')}</td>
         <td>${u.enabled ? 'Sí' : 'No'}</td>
         <td class="actions-cell">
-        <div class="actions-dropdown">
-        <button class="actions-btn">⚙️</button>
-        <div class="actions-menu">
-        <button class="edit" onclick="editarUsuario(${u.id})">Editar</button>
-        <button class="delete" onclick="eliminarUsuario(${u.id})">Eliminar</button>
-        </div>
-        </div>
+          <div class="actions-dropdown">
+            <button class="actions-btn">⚙️</button>
+            <div class="actions-menu">
+              <button class="edit" onclick="editarUsuario(${u.id})">Editar</button>
+              <button class="delete" onclick="eliminarUsuario(${u.id})">Eliminar</button>
+            </div>
+          </div>
         </td>
-        
-        `;
-        userTableBody.appendChild(row);
-      });
-    }
-    
-    // <td>
-    //   <button class="edit" type="button" onclick="editarUsuario(${u.id})">Editar</button>
-    //   <button class="delete" type="button" onclick="eliminarUsuario(${u.id})">Eliminar</button>
-    // </td>
+      `;
+      userTableBody.appendChild(row);
+    });
+  }
+
   // --------------------
-  // PAGINACIÓN
+  // PAGINACIÓN REAL
   // --------------------
-  function renderPagination(count) {
-    prevBtn.disabled = currentPage === 0;
-    nextBtn.disabled = count < pageSize;
+  function renderPagination(pageData) {
+    prevBtn.disabled = pageData.first;
+    nextBtn.disabled = pageData.last;
   }
 
   window.prevPage = () => {
@@ -111,21 +111,6 @@ window.initUsers = function () {
   };
 
   // --------------------
-  // FORM SUBMIT
-  // --------------------
-  userForm.addEventListener('submit', async e => {
-    e.preventDefault();
-    // (tu lógica existente para crear/editar usuario)
-    currentPage = 0;
-    cargarUsuarios();
-  });
-
-  // --------------------
-  // INIT
-  // --------------------
-  cargarUsuarios();
-
-  // --------------------
   // CREAR / ACTUALIZAR
   // --------------------
   userForm.addEventListener('submit', async e => {
@@ -138,7 +123,7 @@ window.initUsers = function () {
     const roles = Array.from(document.getElementById('roles').selectedOptions).map(o => o.value);
     const enabled = document.getElementById('enabled').checked;
 
-    const body = {fullName, email, roles, enabled};
+    const body = { fullName, email, roles, enabled };
     if (password && password.trim() !== '') {
       body.password = password;
     }
@@ -163,14 +148,15 @@ window.initUsers = function () {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
-        const msg = errorData?.message || 'Error al guardar usuario';
-        alert(msg);
+        alert(errorData?.message || 'Error al guardar usuario');
         return;
       }
 
       userForm.reset();
       document.getElementById('userId').value = '';
+      currentPage = 0;
       cargarUsuarios();
+
     } catch (e) {
       console.error(e);
       alert('Error de conexión al guardar usuario');
@@ -178,18 +164,21 @@ window.initUsers = function () {
   });
 
   // --------------------
-  // EDITAR USUARIO
+  // EDITAR USUARIO (FIX)
   // --------------------
   window.editarUsuario = async id => {
     try {
-      const res = await fetch('http://localhost:8081/admin/users', {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const res = await fetch(
+        `http://localhost:8081/admin/users?page=${currentPage}&size=${pageSize}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      });
+      );
 
-      const usuarios = await res.json();
-      const usuario = usuarios.find(u => u.id === id);
+      const pageData = await res.json();
+      const usuario = pageData.content.find(u => u.id === id);
       if (!usuario) return;
 
       document.getElementById('userId').value = usuario.id;
@@ -202,6 +191,7 @@ window.initUsers = function () {
       Array.from(rolesSelect.options).forEach(opt => {
         opt.selected = usuario.roles.includes(opt.value);
       });
+
     } catch (e) {
       console.error(e);
       alert('Error al cargar datos del usuario');
@@ -224,12 +214,12 @@ window.initUsers = function () {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
-        const msg = errorData?.message || 'Error al eliminar usuario';
-        alert(msg);
+        alert(errorData?.message || 'Error al eliminar usuario');
         return;
       }
 
       cargarUsuarios();
+
     } catch (e) {
       console.error(e);
       alert('Error de conexión al eliminar usuario');

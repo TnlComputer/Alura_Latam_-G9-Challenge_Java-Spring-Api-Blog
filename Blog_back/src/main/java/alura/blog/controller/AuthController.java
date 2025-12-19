@@ -1,16 +1,12 @@
 package alura.blog.controller;
 
-import alura.blog.dominio.usuario.DatosLoginUsuario;
-import alura.blog.dominio.usuario.DatosRegistroUsuario;
-import alura.blog.dominio.usuario.UserService;
+import alura.blog.dominio.usuario.*;
 import alura.blog.infra.security.DatosJWTToken;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,6 +33,14 @@ public class AuthController {
 
         String token = userService.login(datos);
         return ResponseEntity.ok(new DatosJWTToken(token));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<DatosDetalleUsuario> getCurrentUser(@AuthenticationPrincipal String email) {
+        if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        User user = userService.findByEmail(email);
+        return ResponseEntity.ok(new DatosDetalleUsuario(user));
     }
 
 }
