@@ -132,7 +132,7 @@ public class AdminUserController {
     // ELIMINAR
     // -----------------------
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('SUPER')")
+    @PreAuthorize("hasRole('SUPER') or hasRole('ADMIN')")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
         userService.eliminarUsuarioAdmin(id);
         return ResponseEntity.noContent().build();

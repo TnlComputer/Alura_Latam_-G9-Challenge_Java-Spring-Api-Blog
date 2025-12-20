@@ -139,10 +139,11 @@
     postsContainer.innerHTML = '';
 
     posts.forEach(p => {
+      // console.log('Post completo:', p); // <-- Aquí verás todo el objeto
       const card = document.createElement('div');
       card.classList.add('post-card');
 
-      const normalizedCategory = normalizeCategory(p.category);
+      const normalizedCategory = normalizeCategory(p.categoryName);
       const color = categoryColors[normalizedCategory] || '#0077ff';
 
       const tab = document.createElement('div');
@@ -167,7 +168,11 @@
             </div>
             ${dateText ? `<div style="color:#999; margin-left:48px;">${dateText}</div>` : ''}
           </div>
-          ${p.category ? `<div style="color:${color}; font-weight:600; margin-right:16px;">#${p.category}</div>` : ''}
+          ${
+            p.categoryName
+              ? `<div style="color:${color}; font-weight:600; margin-right:16px;">#${p.categoryName}</div>`
+              : ''
+          }
         </div>
         <h3 style="margin-left:100px; font-size:1.20em;">${p.title}</h3>
         <p style="margin-left:100px; font-size:0.90em;">${p.mensaje || ''}</p>

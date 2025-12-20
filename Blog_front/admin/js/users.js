@@ -11,7 +11,7 @@ window.initUsers = function () {
   // --------------------
   // ELEMENTOS
   // --------------------
-  const userTableBody = document.querySelector('#userTable tbody');
+  const userTableBody = document.querySelector('#usersTable tbody');
   const userForm = document.getElementById('userForm');
   const logoutBtn = document.getElementById('logoutBtn');
   const prevBtn = document.getElementById('prevPage');
@@ -38,14 +38,11 @@ window.initUsers = function () {
   // --------------------
   async function cargarUsuarios() {
     try {
-      const res = await fetch(
-        `http://localhost:8081/admin/users?page=${currentPage}&size=${pageSize}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+      const res = await fetch(`http://localhost:8081/admin/users?page=${currentPage}&size=${pageSize}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
+      });
 
       if (!res.ok) {
         alert('Error al cargar usuarios');
@@ -56,7 +53,6 @@ window.initUsers = function () {
 
       renderizarUsuarios(pageData.content);
       renderPagination(pageData);
-
     } catch (e) {
       console.error(e);
     }
@@ -70,22 +66,18 @@ window.initUsers = function () {
 
     usuarios.forEach(u => {
       const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${u.id}</td>
-        <td>${u.fullName}</td>
-        <td>${u.email}</td>
-        <td>${u.roles.join(', ')}</td>
-        <td>${u.enabled ? 'Sí' : 'No'}</td>
-        <td class="actions-cell">
-          <div class="actions-dropdown">
-            <button class="actions-btn">⚙️</button>
-            <div class="actions-menu">
-              <button class="edit" onclick="editarUsuario(${u.id})">Editar</button>
-              <button class="delete" onclick="eliminarUsuario(${u.id})">Eliminar</button>
-            </div>
-          </div>
-        </td>
-      `;
+      row.innerHTML = `    
+      <td>${u.fullName}</td>
+      <td>${u.email}</td>
+      <td>${u.roles.join(', ')}</td>
+      <td>${u.enabled ? 'Sí' : 'No'}</td>
+      <td class="actions-cell">
+        <button class="edit" onclick="editarUsuario(${u.id})">✏️</button>
+        <button class="delete" onclick="toggleUsuario(${u.id}, ${u.enabled})">${u.enabled ? '🗑️' : '✅'}
+        </button>
+      </td>
+    `;
+
       userTableBody.appendChild(row);
     });
   }
@@ -123,7 +115,7 @@ window.initUsers = function () {
     const roles = Array.from(document.getElementById('roles').selectedOptions).map(o => o.value);
     const enabled = document.getElementById('enabled').checked;
 
-    const body = { fullName, email, roles, enabled };
+    const body = {fullName, email, roles, enabled};
     if (password && password.trim() !== '') {
       body.password = password;
     }
@@ -156,7 +148,6 @@ window.initUsers = function () {
       document.getElementById('userId').value = '';
       currentPage = 0;
       cargarUsuarios();
-
     } catch (e) {
       console.error(e);
       alert('Error de conexión al guardar usuario');
@@ -168,14 +159,11 @@ window.initUsers = function () {
   // --------------------
   window.editarUsuario = async id => {
     try {
-      const res = await fetch(
-        `http://localhost:8081/admin/users?page=${currentPage}&size=${pageSize}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+      const res = await fetch(`http://localhost:8081/admin/users?page=${currentPage}&size=${pageSize}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
+      });
 
       const pageData = await res.json();
       const usuario = pageData.content.find(u => u.id === id);
@@ -191,7 +179,6 @@ window.initUsers = function () {
       Array.from(rolesSelect.options).forEach(opt => {
         opt.selected = usuario.roles.includes(opt.value);
       });
-
     } catch (e) {
       console.error(e);
       alert('Error al cargar datos del usuario');
@@ -201,12 +188,12 @@ window.initUsers = function () {
   // --------------------
   // ELIMINAR USUARIO
   // --------------------
-  window.eliminarUsuario = async id => {
-    if (!confirm('¿Eliminar usuario?')) return;
+  window.toggleUsuario = async (id, currentStatus) => {
+    if (!confirm(`${currentStatus ? 'Desactivar' : 'Activar'} usuario?`)) return;
 
     try {
       const res = await fetch(`http://localhost:8081/admin/users/${id}`, {
-        method: 'DELETE',
+        method: 'DELETE', // tu backend interpreta esto como toggle de enabled
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -214,15 +201,14 @@ window.initUsers = function () {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
-        alert(errorData?.message || 'Error al eliminar usuario');
+        alert(errorData?.message || 'Error al cambiar el estado del usuario');
         return;
       }
 
-      cargarUsuarios();
-
+      cargarUsuarios(); // recarga la tabla
     } catch (e) {
       console.error(e);
-      alert('Error de conexión al eliminar usuario');
+      alert('Error de conexión al cambiar el estado del usuario');
     }
   };
 

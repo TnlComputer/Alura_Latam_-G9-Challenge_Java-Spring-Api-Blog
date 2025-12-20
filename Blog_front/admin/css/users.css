@@ -1,5 +1,5 @@
 /* =========================
-   USERS ADMIN
+   USERS ADMIN OPTIMIZED REAL TABLE
 ========================= */
 
 .users-layout {
@@ -12,14 +12,14 @@
 /* ---------- FORM ---------- */
 .form-section {
   background: var(--card-bg);
-  padding: 2.5rem; /* Formulario más grande */
+  padding: 2.5rem;
   border-radius: 12px;
   box-shadow: var(--card-shadow);
 }
 
 .form-section h2 {
   margin-bottom: 2rem;
-  font-size: 1.5rem; /* Título más grande */
+  font-size: 1.5rem;
 }
 
 .form-section label {
@@ -33,14 +33,14 @@
 .form-section select,
 .form-section textarea {
   width: 100%;
-  padding: 0.75rem 1rem; /* Campos más grandes */
+  padding: 0.75rem 1rem;
   margin-top: 0.5rem;
   border-radius: 8px;
   border: 1px solid var(--border-color);
   background: var(--input-bg);
   color: var(--text-primary);
-  box-sizing: border-box;
   font-size: 1.125rem;
+  box-sizing: border-box;
 }
 
 .form-section input:focus,
@@ -54,15 +54,14 @@
 .form-section button {
   margin-top: 1.5rem;
   width: 100%;
-  padding: 1rem; /* Botón más grande */
-  background: var(--accent);
+  padding: 1rem;
   border: none;
   border-radius: 8px;
-  color: #fff;
-  background-color: blue;
   font-size: 1.125rem;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para resaltar */
+  color: #fff;
+  background-color: blue;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   transition: all 0.2s ease;
 }
 
@@ -73,22 +72,9 @@
 
 .checkbox-group {
   display: flex;
-  align-items: center; /* Alinea verticalmente label y checkbox */
-  gap: 0.3rem; /* Reduce el espacio entre label y checkbox */
+  align-items: center;
+  gap: 0.3rem;
   margin-top: 1.5rem;
-}
-
-.checkbox-group label {
-  margin: 0; /* Quita márgenes que puedan empujar el checkbox */
-  font-weight: 500;
-  font-size: 1.125rem; /* Mismo tamaño que los inputs para uniformidad */
-  margin-top: 0.5rem;
-}
-
-.checkbox-group input[type='checkbox'] {
-  width: 1.25rem; /* Ajusta tamaño del checkbox si quieres más grande */
-  height: 1.25rem;
-  cursor: pointer;
 }
 
 /* ---------- TABLE ---------- */
@@ -105,36 +91,45 @@
   font-size: 1.5rem;
 }
 
-#userTable {
+#usersTable {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 0.5rem;
+  border-spacing: 0 0.5rem; /* espacio entre filas */
 }
 
-#userTable th,
-#userTable td {
-  padding: 1rem;
+#usersTable thead th {
+  background-color: blue; /* título sólido */
+  color: white;
+  padding: 12px;
   text-align: left;
-  font-size: 1rem;
-  border-bottom: none;
+  border-radius: 8px 8px 0 0;
 }
 
-#userTable th {
-  font-weight: 600;
-  opacity: 0.85;
+#usersTable th,
+#usersTable td {
+  padding: 0.8rem 1rem;
+  font-size: 1.125rem;
+  text-align: left;
 }
 
-#userTable tbody tr {
+#usersTable tbody tr {
   background: var(--card-bg);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
-#userTable tr:hover {
-  background: var(--hover-bg);
+#usersTable tbody tr:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  z-index: 2;
 }
 
-/* Roles badges */
+#usersTable td {
+  position: relative; /* importante para acciones desplegables */
+}
+
+/* ---------- ROLES ---------- */
 .role-badge {
   display: inline-block;
   padding: 0.2rem 0.5rem;
@@ -145,27 +140,11 @@
   margin-right: 0.2rem;
 }
 
-.role-user {
-  background: #1976d2;
-}
-.role-admin {
-  background: #d32f2f;
-}
-.role-super {
-  background: #9c27b0;
-}
-.role-coordinator {
-  background: #f57c00;
-}
+.role-user { background: #1976d2; }
+.role-admin { background: #d32f2f; }
+.role-super { background: #9c27b0; }
+.role-coordinator { background: #f57c00; }
 
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 0.2rem; /* Más pegado */
-  margin-top: 1.5rem;
-}
-
-/* Estado activo/inactivo */
 .status-dot {
   display: inline-block;
   width: 10px;
@@ -174,140 +153,62 @@
   margin-right: 0.5rem;
 }
 
-.status-active {
-  background: #4caf50;
-}
-.status-inactive {
-  background: #f44336;
-}
+.status-active { background: #4caf50; }
+.status-inactive { background: #f44336; }
 
-/* ---------- ACCIONES COLAPSADAS ---------- */
+/* ---------- ACCIONES ---------- */
 .actions-cell {
-  position: relative;
+  display: flex;
+  justify-content: center; /* centra horizontalmente */
+  align-items: center;     /* centra verticalmente */
+  gap: 0.5rem;             /* espacio entre botones */
 }
 
-.actions-dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.actions-btn {
+.actions-cell .edit,
+.actions-cell .delete {
   padding: 0.5rem 0.8rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: var(--accent);
-  color: #fff;
-  font-size: 1.1rem;
-}
-
-.actions-btn:hover {
-  opacity: 0.9;
-}
-
-.actions-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background: var(--card-bg);
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  padding: 0.5rem 0;
-  min-width: 140px;
-  z-index: 10;
-}
-
-.actions-dropdown:hover .actions-menu {
-  display: block;
-}
-
-.actions-menu button {
-  display: block;
-  width: 100%;
-  padding: 0.6rem 1rem;
-  font-size: 1rem;
-  border: none;
-  background: none;
-  text-align: left;
-  cursor: pointer;
   border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #fff;
+  transition: all 0.2s ease;
 }
 
-.actions-menu button.edit {
-  color: #1976d2;
-}
-.actions-menu button.edit:hover {
-  color: #1565c0;
-  background: rgba(25, 118, 210, 0.1);
+.actions-cell .edit {
+  background-color: transparent;
 }
 
-.actions-menu button.delete {
-  color: #d32f2f;
-}
-.actions-menu button.delete:hover {
-  color: #b71c1c;
-  background: rgba(211, 47, 47, 0.1);
+.actions-cell .edit:hover {
+  background-color: #1565c0;
 }
 
-/* Dark mode */
-[data-theme='dark'] .actions-menu {
-  background: #2b2b2b;
+.actions-cell .delete {
+  background-color: transparent;
 }
 
-[data-theme='dark'] .actions-menu button.edit:hover {
-  color: #90caf9;
-  background: rgba(144, 202, 249, 0.1);
+.actions-cell .delete:hover {
+  background-color: #b71c1c;
 }
-[data-theme='dark'] .actions-menu button.delete:hover {
-  color: #ef9a9a;
-  background: rgba(239, 154, 154, 0.1);
-}
+
 
 /* ---------- DARK MODE ---------- */
 [data-theme='dark'] .form-section,
-[data-theme='dark'] .table-section {
-  background: #1e1e1e;
-  color: #e0e0e0;
-}
-
-[data-theme='dark'] .form-section label {
-  color: #e0e0e0;
-}
-
+[data-theme='dark'] .table-section { background: #1e1e1e; color: #e0e0e0; }
+[data-theme='dark'] .form-section label { color: #e0e0e0; }
 [data-theme='dark'] .form-section input,
 [data-theme='dark'] .form-section select,
-[data-theme='dark'] .form-section textarea {
-  background-color: #2b2b2b;
-  color: #e0e0e0;
-  border: 1px solid #555;
-}
-
+[data-theme='dark'] .form-section textarea { background: #2b2b2b; color: #e0e0e0; border:1px solid #555; }
 [data-theme='dark'] .form-section input:focus,
 [data-theme='dark'] .form-section select:focus,
-[data-theme='dark'] .form-section textarea:focus {
-  border-color: #90caf9;
-  box-shadow: 0 0 0 2px rgba(144, 202, 249, 0.4);
-}
+[data-theme='dark'] .form-section textarea:focus { border-color:#90caf9; box-shadow:0 0 0 2px rgba(144,202,249,0.4); }
 
-[data-theme='dark'] #userTable tbody button.edit:hover {
-  color: #90caf9;
-}
-
-[data-theme='dark'] #userTable tbody button.delete:hover {
-  color: #ef9a9a;
-}
-
-[data-theme='dark'] .actions-menu {
-  background: #2b2b2b;
-}
+[data-theme='dark'] #usersTable tbody button.edit:hover { color: #90caf9; }
+[data-theme='dark'] #usersTable tbody button.delete:hover { color: #ef9a9a; }
+[data-theme='dark'] .actions-menu { background: #2b2b2b; }
 
 /* ---------- PAGINACIÓN ---------- */
-#pagination {
-  margin-top: 1.5rem;
-  text-align: center;
-}
-
+#pagination { margin-top: 1.5rem; text-align: center; }
 #pagination button {
   padding: 0.75rem 1.5rem;
   font-size: 1.125rem;
@@ -315,26 +216,12 @@
   border-radius: 8px;
   cursor: pointer;
 }
-
-#pagination button:disabled {
-  background-color: #e0e0e0;
-  cursor: not-allowed;
-}
-
-/* Dark mode paginación */
-[data-theme='dark'] #pagination button:disabled {
-  background-color: #555;
-  color: #ccc;
-}
+#pagination button:disabled { background-color: #e0e0e0; cursor: not-allowed; }
+[data-theme='dark'] #pagination button:disabled { background-color: #555; color:#ccc; }
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 1024px) {
-  .users-layout {
-    grid-template-columns: 1fr;
-  }
-
-  #userTable th,
-  #userTable td {
-    padding: 0.8rem;
-  }
+  .users-layout { grid-template-columns: 1fr; }
+  #usersTable th,
+  #usersTable td { display: block; width: 100%; padding: 0.8rem; }
 }

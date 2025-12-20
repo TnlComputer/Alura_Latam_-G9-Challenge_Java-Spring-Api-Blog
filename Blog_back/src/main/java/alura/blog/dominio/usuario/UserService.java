@@ -224,8 +224,12 @@ public class UserService {
     }
 
     @Transactional
-    public void eliminarUsuarioAdmin(Long id) {
-        repo.deleteById(id);
+    public User eliminarUsuarioAdmin(Long id) {
+        User user = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        user.setEnabled(!user.getEnabled());
+        return repo.save(user);
     }
 
     @Transactional(readOnly = true)
