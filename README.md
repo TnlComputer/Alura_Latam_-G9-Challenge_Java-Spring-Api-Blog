@@ -242,17 +242,17 @@ Feedback visual con toasts y modales
 
 /docs/images/
 
-```link
+
 ![Home](docs/images/home.png)
 ![Register](docs/images/register.png)
 ![Login](docs/images/login.png)
 ![Crear Tópico](docs/images/crear-topico.png)
 ![Detalle Tópico y respuestas](docs/images/topico-detail.png)
 ![Respuesta Tópico](docs/images/respuesta-topico.png)
-![Panel Admin - Dashboard](docs/images/admin-panel.png)
-![Panel Admin - Usuarios](docs/images/admin-panel-usuarios.png)
-![Panel Admin - T{opicos}](docs/images/admin-panel-topicos.png)
-```
+![Panel Admin - Dashboard](docs/images/panel-admin.png)
+![Panel Admin - Usuarios](docs/images/panel-admin-usuarios.png)
+![Panel Admin - Topicos}](docs/images/panel-admin-topicos.png)
+
 
 ## 🎓 Certificado – Alura
 
