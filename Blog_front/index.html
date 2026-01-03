@@ -9,22 +9,21 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/home.css">
 
-  <!-- JS -->
-  <script defer src="js/auth.js"></script>
-  <script defer src="js/themes.js"></script>
-  <!-- <script defer src="js/menu-active.js"></script> -->
-  <script defer src="js/index.js"></script>
+  <!-- ✅ TOASTIFY CSS (SOLO AQUÍ) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 
 <body>
-
   <!-- ================= HEADER ================= -->
   <header>
+    <!-- NAV -->
     <nav id="mainMenu">
-      <a href="index.html">Inicio</a>
-      <!-- <a href="blog.html">Blog</a> -->
-      <span id="adminMenu"></span>
-       <button id="btnCrearPost" style="margin-left: 15px;">Crear Post</button>
+      <!-- <div id="mainMenu"> -->
+        <button class="nav-btn active" data-action="home">Inicio</button>
+        <span class="nav-btn nav-btn-admin" id="adminMenu"></span>
+        <!-- <button class="nav-btn" data-action="admin">Panel Admin</button> -->
+      <!-- </div> -->
+      <button id="btnCrearTopico" class="nav-btn">Crear Tópico</button>
     </nav>
 
     <div class="auth-theme-container">
@@ -33,32 +32,19 @@
         <a id="registerLink" href="register.html">Registrar</a>
         <button id="logoutBtn">Cerrar sesión</button>
       </div>
-
       <button id="themeToggle" class="theme-toggle"></button>
     </div>
   </header>
 
   <!-- ================= MAIN ================= -->
-  <main class="home">
-
+  <main class="layout">
     <!-- HERO -->
     <section class="hero fade-in">
-      <h1>Posts de Programación & Data</h1>
-      <p>
-        Explora posts, tutoriales y ejemplos prácticos de desarrollo y análisis de datos.
-      </p>
-      <!-- <a href="#postsContainer" class="btn-primary">Explorar posts</a> -->
+      <h1>Comunidad de Programación & Data</h1>
+      <p>Descubrí y participá en tópicos con preguntas, soluciones y recursos sobre desarrollo y datos.</p>
     </section>
 
-    <!-- ================= CATEGORÍAS ================= -->
-    <section class="categories fade-in delay-1">
-      <h2>Categorías</h2>
-      <div class="category-grid" id="categoriesContainer">
-        <!-- Aquí se generarán las categorías dinámicamente -->
-      </div>
-    </section>
-
-    <!-- ================= SEARCH ================= -->
+    <!-- SEARCH -->
     <section class="home-search fade-in delay-2">
       <input type="text" id="searchInput" placeholder="Buscar posts..." aria-label="Buscar posts" />
     </section>
@@ -66,14 +52,58 @@
     <!-- ÚLTIMOS POSTS -->
     <section class="latest-posts fade-in delay-2">
       <h2>Últimos posts</h2>
-      <div class="posts-grid" id="postsContainer"> <!-- Aquí se generarán los posts dinámicamente --></div>
+      <div class="posts-grid" id="postsContainer"></div>
       <div style="text-align:center; margin-top:20px;">
         <button id="loadMoreBtn" class="btn-primary">Cargar más</button>
       </div>
     </section>
 
+    <!-- ================= MODAL CREAR TÓPICO ================= -->
+    <div id="crearTopicoModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitleHome">Crear Nuevo Tópico</h3>
+          <span class="close" id="closeModalHome">&times;</span>
+        </div>
+
+        <form id="topicoFormHome" class="admin-form">
+          <div class="form-group">
+            <label for="tituloHome">Título:</label>
+            <input type="text" id="tituloHome" required>
+          </div>
+
+          <div class="form-group">
+            <label for="mensajeHome">Mensaje:</label>
+            <textarea id="mensajeHome" rows="5" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <!-- <label for="cursoHome">Curso:</label>
+            <input type="text" id="cursoHome" required> -->
+            <label for="cursoSelect">Curso</label>
+            <select id="cursoSelect" name="curso" required>
+              <option value="">Seleccioná un curso</option>
+              <!-- Las opciones se llenan con JS -->
+            </select>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn-primary">Publicar Tópico</button>
+            <button type="button" class="btn-secondary" id="cancelModalHome">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </main>
 
+  <!-- ✅ SCRIPTS (SOLO UNA VEZ CADA UNO) -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Tus scripts defer -->
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/themes.js"></script>
+  <script defer src="js/index.js"></script>
 </body>
 
 </html>

@@ -1,65 +1,100 @@
-# 📝 Alura Blog – API REST
+# 📝 Alura Blog / Foro - API REST + Frontend
 
-Backend del proyecto **Alura Blog**, desarrollado con **Spring Boot**, que provee una API REST segura para la gestión de usuarios y publicaciones, utilizando **JWT** para autenticación y autorización.
+## Proyecto desarrollado como parte del Challenge Alura Latam, que implementa un foro completo con autenticación, roles, tópicos, respuestas anidadas y panel de administración, utilizando Spring Boot en el backend y HTML/CSS/JS en el frontend.
 
----
+# 🚀 Tecnologías utilizadas
 
-## 🚀 Tecnologías utilizadas
+## Backend
 
-- Java 21
-- Spring Boot 3
-- Spring Security
-- JWT (Auth0)
-- Spring Data JPA (Hibernate)
-- MySQL
-- Flyway
-- Lombok
-- Maven
-- Swagger / OpenAPI
+Java 21
 
----
+Spring Boot 3
 
-## 🧱 Arquitectura
+Spring Security
 
-- **API REST desacoplada**
-- Autenticación **stateless** mediante JWT
-- Roles de usuario (`ROLE_USER`, `ROLE_ADMIN`)
-- Separación por capas:
-  - Controller
-  - Service
-  - Repository
-  - Security
-  - Domain
+JWT (Auth0)
 
----
+Spring Data JPA (Hibernate)
 
-## 🔐 Autenticación y Seguridad
+MySQL
 
-La API utiliza **JWT (JSON Web Token)** para proteger los endpoints.
+Flyway
 
-### Flujo de autenticación
+Lombok
 
-1. El usuario se registra (`/auth/register`)
-2. El usuario hace login (`/auth/login`)
-3. El backend devuelve un **token JWT**
-4. El frontend guarda el token (localStorage)
-5. El token se envía en cada request protegida mediante el header:
+Maven
 
-```http
+Swagger / OpenAPI
+
+## Frontend
+
+HTML5
+
+CSS3 (custom, diseño tipo card)
+
+JavaScript (Vanilla)
+
+Fetch API
+
+SweetAlert2
+
+Toastify
+
+Dark / Light mode
+
+# 🧱 Arquitectura
+
+API REST desacoplada
+
+Autenticación stateless con JWT
+
+Roles de usuario:
+
+USER
+
+ADMIN
+
+## Separación por capas:
+
+Controller
+
+Service
+
+Repository
+
+Security
+
+Domain
+
+Frontend independiente consumiendo la API vía HTTP
+
+# 🔐 Autenticación y Seguridad
+
+La API utiliza JWT (JSON Web Token) para proteger los endpoints.
+
+Flujo de autenticación
+
+Registro de usuario (/auth/register)
+
+Login (/auth/login)
+
+El backend devuelve un JWT
+
+El frontend guarda el token en localStorage
+
+El token se envía en cada request protegida:
+
+```html
 Authorization: Bearer <token>
 ```
 
-📌 Endpoints principales
-🔑 Autenticación
-Registro de usuario
-```
-{
-  "email": "juan@email.com",
-  "password": "123456"
-}
+# 📌 Endpoints principales
 
+## 🔑 Autenticación
 
-```
+## Registro de usuario
+
+```html
 POST /auth/register
 
 {
@@ -70,12 +105,15 @@ POST /auth/register
 
 ```
 
-📌 Respuesta:
-```
+### 📌 Respuesta:
+
+```html
 201 Created
 ```
-Login
-```
+
+## Login
+
+```html
 POST /auth/login
 
 {
@@ -84,25 +122,54 @@ POST /auth/login
 }
 
 ```
-📌 Respuesta:
-```
+
+## 📌 Respuesta:
+
+```html
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
+## 🧵 Tópicos y Respuestas (Foro)
 
-📝 Posts (requieren autenticación)
+### 📝 Tópicos
 
-| Método | Endpoint              | Descripción                 |
-| ------ | --------------------- | --------------------------- |
-| GET    | /api/posts            | Listar posts activos        |
-| POST   | /api/admin/posts      | Crear post                  |
-| PUT    | /api/admin/posts/{id} | Editar post                 |
-| DELETE | /api/admin/posts/{id} | Eliminar post (soft delete) |
+| Método | Endpoint      | Descripción         |
+| ------ | ------------- | ------------------- |
+| GET    | /topicos      | Listar tópicos      |
+| GET    | /topicos/{id} | Ver tópico          |
+| POST   | /topicos      | Crear tópico        |
+| PUT    | /topicos/{id} | Editar (solo autor) |
+| PUT    | /topicos/{id} | Cerrar tópico       |
 
+## 💬 Respuestas
 
-🗄️ Base de Datos
+| Método | Endpoint                                          |
+| ------ | ------------------------------------------------- |
+| GET    | /topicos/{id}/respuestas                          |
+| POST   | /topicos/{id}/respuestas                          |
+| POST   | /topicos/{id}/respuestas/{respuestaId}/respuestas |
+
+✔ Respuestas anidadas
+✔ Solución aceptada
+✔ Edición y eliminación solo por el autor
+
+## 🛠️ Panel de Administración
+
+El rol ADMIN accede a un panel separado desde el frontend.
+
+Funciones del admin:
+
+Gestión de usuarios
+
+Gestión de tópicos
+
+Moderación general
+
+### 📌 El admin NO edita ni cierra tópicos desde la vista pública, manteniendo reglas claras de negocio.
+
+## 🗄️ Base de Datos
 
 MySQL 8
 
@@ -118,10 +185,10 @@ posteos
 
 flyway_schema_history
 
-⚙️ Configuración
+## ⚙️ Configuración
 application.properties
 
-```
+```java
 server.port=Tu_port
 
 spring.datasource.url=jdbc:mysql://localhost:3306/alura_blog_api
@@ -135,7 +202,7 @@ api.security.token.secret=Tu_Token_secreto
 
 ```
 
-🧪 Pruebas
+## 🧪 Pruebas
 
 Las pruebas de la API pueden realizarse con:
 
@@ -146,33 +213,124 @@ Postman
 Swagger UI
 
 Swagger disponible en:
-```
+
+```html
+
 http://localhost:8081/swagger-ui.html
+
 ```
 
-🌐 Frontend
+## 🌐 Frontend
 
-El frontend consume esta API desde un cliente web (HTML + JS), utilizando fetch y enviando el token JWT en cada request protegida.
+Vista Home con listado de tópicos
 
-👨‍💻 Autor
+Vista Detalle de Tópico consistente con el index
+
+Cards reutilizables
+
+Acciones visibles solo al hacer hover (desktop)
+
+Responsive
+
+Modo oscuro
+
+Feedback visual con toasts y modales
+
+## 🖼️ Capturas del proyecto
+
+📂 Las imágenes se guardan en:
+
+/docs/images/
+
+```link
+![Home](docs/images/home.png)
+![Register](docs/images/register.png)
+![Login](docs/images/login.png)
+![Crear Tópico](docs/images/crear-topico.png)
+![Detalle Tópico y respuestas](docs/images/topico-detail.png)
+![Respuesta Tópico](docs/images/respuesta-topico.png)
+![Panel Admin - Dashboard](docs/images/admin-panel.png)
+![Panel Admin - Usuarios](docs/images/admin-panel-usuarios.png)
+![Panel Admin - T{opicos}](docs/images/admin-panel-topicos.png)
+```
+
+## 🎓 Certificado – Alura
+
+Proyecto desarrollado dentro del programa Oracle Next Education – Alura Latam.
+
+## 🗄️ Base de Datos
+
+MySQL 8
+
+Migraciones con Flyway
+
+Tablas principales:
+
+users
+
+user_roles
+
+topicos
+
+respuestas
+
+flyway_schema_history
+
+## ⚙️ Configuración
+
+application.properties
+
+```java
+server.port=8081
+
+spring.datasource.url=jdbc:mysql://localhost:3306/alura_blog_api
+spring.datasource.username=TU_USUARIO
+spring.datasource.password=TU_PASSWORD
+
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+
+api.security.token.secret=TU_SECRETO_JWT
+
+```
+
+## 🧪 Pruebas
+
+Postman
+
+Insomnia
+
+Swagger UI
+
+Swagger disponible en:
+
+```html
+
+http://localhost:8081/swagger-ui.html
+
+```
+
+## 🧠 Aprendizajes destacados
+
+JWT y seguridad stateless
+
+Control de permisos por rol y autoría
+
+Respuestas anidadas
+
+Separación frontend / backend
+
+UX basada en reglas reales
+
+Diseño consistente y mantenible
+
+## 👨‍💻 Autor
 
 Jorge Gustavo Martinez
-Analista Programador – Backend Developer
+Analista Programador – Backend / Fullstack Developer
 
-Proyecto desarrollado como parte de la formación Alura Latam – Java & Spring Boot.
+Proyecto realizado para Alura Latam – Java & Spring Boot
 
-📄 Licencia
+## 📄 Licencia
 
-Este proyecto es de uso educativo.
----
-
-## ✅ Próximo paso sugerido
-
-Si querés, en el siguiente mensaje podemos:
-
-- Ajustar el README a **nivel recruiter**
-- Agregar **diagrama de arquitectura**
-- Documentar **cómo usar el token en el frontend**
-- Preparar el README para **deploy**
-
-Decime 👉 *“mejoralo para GitHub”* o *“agreguemos diagramas”* 🚀
+Proyecto de uso educativo.

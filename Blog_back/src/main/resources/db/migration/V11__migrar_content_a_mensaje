@@ -1,3 +1,0 @@
--- V1__migrar_content_a_mensaje.sql
-UPDATE posts SET mensaje = content WHERE content IS NOT NULL;
-ALTER TABLE posts DROP COLUMN content;

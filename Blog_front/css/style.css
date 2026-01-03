@@ -1,5 +1,5 @@
 /* =========================
-   VARIABLES GLOBALES / THEME
+   VARIABLES / THEME
 ========================= */
 :root {
   --bg: #ffffff;
@@ -10,7 +10,7 @@
   --secondary: #111111;
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
   --bg: #0f0f0f;
   --text: #f5f5f5;
   --card: #1e1e1e;
@@ -20,60 +20,125 @@
 }
 
 /* =========================
-   RESET BÁSICO
+   RESET
 ========================= */
-* { box-sizing: border-box; margin:0; padding:0; }
-body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
 
 /* =========================
-   LINKS GLOBALES
+   LAYOUT BASE GLOBAL
 ========================= */
-a, a:visited { color: var(--text); text-decoration: none; }
-a:hover { text-decoration: none; }
+.layout {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
 
 /* =========================
-   HEADER GLOBAL
+   LINKS
+========================= */
+a,
+a:visited {
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* =========================
+   HEADER
 ========================= */
 header {
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
 }
 
-#mainMenu { display: flex; align-items: center; gap: 24px; }
-#mainMenu a { color: var(--text); font-weight: 500; padding: 6px 12px; border-radius: 8px; transition: background .2s, color .2s; }
-#mainMenu a:hover { background: rgba(0,119,255,.12); }
-#mainMenu a.active { background: var(--primary); color:#fff; font-weight:600; }
-#adminMenu a { font-weight:700; color: var(--primary); }
+/* =========================
+   NAV
+========================= */
+#mainMenu {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
 
-.auth-theme-container { display: flex; align-items: center; gap: 14px; }
-#authLinks { display: flex; align-items: center; gap:10px; }
-#authLinks a, #authLinks button {
-  background: transparent;
-  border: 1px solid var(--border);
+#mainMenu a {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+
+#mainMenu a:hover {
+  background: rgba(0, 119, 255, 0.12);
+}
+
+#mainMenu a.active {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+#adminMenu a {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* =========================
+   AUTH / THEME
+========================= */
+.auth-theme-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+#authLinks {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#authLinks a,
+#authLinks button {
   padding: 6px 14px;
   border-radius: 8px;
-  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
   color: var(--text);
   font-weight: 500;
-  transition: background .2s, border-color .2s;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
 }
-#authLinks a:hover, #authLinks button:hover { background: rgba(0,119,255,.08); border-color: var(--primary); }
+
+#authLinks a:hover,
+#authLinks button:hover {
+  background: rgba(0, 119, 255, 0.08);
+  border-color: var(--primary);
+}
 
 .theme-toggle {
+  padding: 8px 14px;
+  border-radius: 10px;
   border: none;
   background: var(--primary);
   color: #fff;
-  padding: 8px 14px;
-  border-radius: 10px;
-  cursor: pointer;
   font-weight: 600;
+  cursor: pointer;
 }
 
 /* =========================
@@ -81,24 +146,113 @@ header {
 ========================= */
 .btn-primary {
   display: inline-block;
-  background: var(--primary);
-  color: #fff;
   padding: 12px 22px;
   border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
   font-weight: 600;
   text-transform: uppercase;
-  transition: transform .2s, opacity .2s;
+  transition: transform 0.2s, opacity 0.2s;
 }
-.btn-primary:hover { transform: translateY(-2px); opacity:.9; }
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
 
 /* =========================
-   CARDS GENERALES
+   CARDS
 ========================= */
 .card {
+  padding: 20px;
+  border-radius: 14px;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
-  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
-.card:hover { transform: translateY(-6px); box-shadow: 0 10px 30px rgba(0,0,0,.12); border-color: var(--primary); }
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  border-color: var(--primary);
+}
+
+/* =========================
+   NAV BUTTONS
+========================= */
+.nav-btn {
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  background: var(--primary);
+  color: #fff !important;
+}
+
+/* =========================
+   PRIMARY HEADER BUTTON
+========================= */
+.btn-primary-header {
+  margin-left: 16px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-primary-header:hover {
+  background: #0053c7;
+  transform: translateY(-1px);
+}
+
+.btn-primary-header:active {
+  transform: translateY(0);
+}
+
+[data-theme='dark'] .btn-primary-header {
+  background: #2563eb;
+}
+
+[data-theme='dark'] .btn-primary-header:hover {
+  background: #1d4ed8;
+}
+
+/* =========================
+   ADMIN EMPTY STATE
+========================= */
+.nav-btn-admin:empty {
+  display: none;
+  pointer-events: none;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  header {
+    padding: 8px 16px;
+  }
+
+  #mainMenu {
+    gap: 8px;
+  }
+
+  .nav-btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.75rem;
+  }
+}

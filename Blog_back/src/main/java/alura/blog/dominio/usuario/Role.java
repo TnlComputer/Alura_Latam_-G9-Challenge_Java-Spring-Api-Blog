@@ -1,15 +1,20 @@
 package alura.blog.dominio.usuario;
 
-public enum Role {
-    USER,
-    ADMIN,
-    SUPER,
-    COORDINATOR;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-    // Para Spring Security
-    public String asSpringRole() {
-        return "ROLE_" + this.name();
-    }
+@Entity
+@Table(name = "roles")
+@Getter
+@Setter
+public class Role {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String name; // "USER" o "ADMIN"
 }
-
 

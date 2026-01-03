@@ -23,7 +23,7 @@ form.addEventListener('submit', async e => {
   // Redirigir según rol (opcional)
   const payload = JSON.parse(atob(data.token.split('.')[1]));
   const roles = payload.roles || [];
-  if (roles.includes('ADMIN') || roles.includes('SUPER')) {
+  if (roles.includes('ADMIN')) {
     window.location.href = 'admin/index.html';
   } else {
     window.location.href = 'index.html';

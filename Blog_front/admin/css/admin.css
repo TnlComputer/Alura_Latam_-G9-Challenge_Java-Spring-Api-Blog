@@ -1,97 +1,129 @@
-/* =========================
-   ADMIN GENERAL
-========================= */
-
+/* /* ========================================
+   TU CSS ORIGINAL EXACTO (SIN NADA NUEVO)
+======================================== */
 .admin-container {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 2.5rem 3rem;
+  max-width: 1100px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
 }
 
-/* Título */
 .admin-container h2 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
-/* Cards del menú admin */
-.admin-cards {
+header {
+  margin-bottom: 0;
+}
+
+.dashboard-section {
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.dashboard-header-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(6, 1fr);
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-size: 0.9rem;
 }
 
-.admin-cards button,
-.admin-cards a {
+.usuarios-header {
+  grid-column: 1 / 4;
+  text-align: center;
+}
+
+.topicos-header {
+  grid-column: 4 / 7;
+  text-align: center;
+}
+
+.dashboard-cards-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.75rem;
+}
+
+.stat-card {
+  padding: 0.75rem 0.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  min-height: 90px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-
-  padding: 1.5rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-
-  border-radius: 14px;
-  cursor: pointer;
-  text-decoration: none;
-
-  transition: all 0.25s ease;
+  align-items: center;
 }
 
-.admin-cards button:hover,
-.admin-cards a:hover {
-  transform: translateY(-4px);
-  background: var(--accent);
-  color: #fff;
+.stat-icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
 }
 
-/* Contenido dinámico */
-#adminContent {
-  margin-top: 2rem;
+.stat-info h3 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0.2rem 0 0.05rem;
 }
 
-/* ============================= */
-/* ADMIN CARDS – LIGHT MODE */
-/* ============================= */
-[data-theme='light'] .admin-cards button,
-[data-theme='light'] .admin-cards a {
-  background: #ffffff;
+.stat-info p {
+  font-size: 0.75rem;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+[data-theme="dark"] .stat-info h3 {
+  color: #60a5fa;
+}
+
+[data-theme="light"] .stat-info h3 {
   color: #111827;
-  border: 1px solid #d1d5db;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  transition: all 0.25s ease;
 }
 
-/* LIGHT – HOVER */
-[data-theme='light'] .admin-cards button:hover,
-[data-theme='light'] .admin-cards a:hover {
-  background: var(--accent);
-  color: #111827;              /* ← TEXTO OSCURO */
-  border-color: var(--accent);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
-}
-
-
-/* ============================= */
-/* ADMIN CARDS – DARK MODE */
-/* ============================= */
-[data-theme='dark'] .admin-cards button,
-[data-theme='dark'] .admin-cards a {
+[data-theme="dark"] .stat-card {
   background: #1f2933;
-  color: #f9fafb;
-  border: 1px solid #374151;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-  transition: all 0.25s ease;
+  border: 1px solid #4b5563;
+  color: #e5e7eb;
 }
 
-/* DARK – HOVER */
-[data-theme='dark'] .admin-cards button:hover,
-[data-theme='dark'] .admin-cards a:hover {
-  background: var(--accent);
-  color: #ffffff;
-  border-color: var(--accent);
-  transform: translateY(-3px);
+[data-theme="light"] .stat-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header-row {
+    grid-template-columns: 1fr;
+  }
+  .usuarios-header,
+  .topicos-header {
+    grid-column: 1 / 2;
+  }
+  .dashboard-cards-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   SOLO BOTONES NAV - SIN TOCAR HEADER
+======================================== */
+.nav-btn {
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: inherit;
+  margin: 0;
+}
+
+.nav-btn.active,
+.nav-btn:hover {
+  background: var(--primary, #3b82f6);
+  color: white !important;
 }

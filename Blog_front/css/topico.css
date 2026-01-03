@@ -1,0 +1,220 @@
+/* =========================
+   TOPICO DETAIL (IGUAL AL INDEX)
+========================= */
+.topico-detail {
+  margin: 30px auto;
+  padding: 24px;
+  background: var(--card);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* sin animaciones exageradas */
+.topico-detail:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* =========================
+   HEADER
+========================= */
+.topico-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  opacity: 0.7;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   TITULO / MENSAJE
+========================= */
+.topico-detail h1 {
+  font-size: 26px;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.topico-mensaje {
+  font-size: 14px;
+  opacity: 0.75;
+  margin-bottom: 16px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.topico-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  gap: 16px;
+}
+
+.topico-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* =========================
+   CURSO
+========================= */
+#topicoCurso {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.15); /* primary suave */
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+
+/* =========================
+   ACTIONS + STATUS
+========================= */
+.topico-actions-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ACCIONES SOLO AL HOVER */
+#topicoActions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.topico-detail:hover #topicoActions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* =========================
+   STATUS (DESPUÉS DE BOTONES)
+========================= */
+.status-open,
+.status-closed {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.status-open { background: #10b981; }
+.status-closed { background: #ef4444; }
+
+/* =========================
+   BOTONES
+========================= */
+.btn-action {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-responder { background: var(--primary); color: #fff; }
+.btn-editar { background: #f59e0b; color: #fff; }
+.btn-cerrar { background: #ef4444; color: #fff; }
+
+/* =========================
+   RESPUESTAS
+========================= */
+.respuestasContainer {
+  padding-top: 30px;
+  border-top: 2px solid var(--border);
+}
+
+.respuesta {
+  margin-bottom: 18px;
+  padding: 18px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.respuesta.solucion {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #d1fae5, #f0fdf4);
+}
+
+/* =========================
+   RESPUESTAS ANIDADAS
+========================= */
+.respuesta[style*='margin-left'] {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* =========================
+   RESPUESTA ACTIONS
+========================= */
+.respuesta-actions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.respuesta:hover .respuesta-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* =========================
+   SOLUCION BADGE
+========================= */
+.solucion-badge {
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #10b981;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+[data-theme='dark'] .topico-detail,
+[data-theme='dark'] .respuesta {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+[data-theme='dark'] .respuesta.solucion {
+  background: #166534;
+  border-color: #22c55e;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  #topicoActions,
+  .respuesta-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .btn-action {
+    width: 100%;
+  }
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Post | Blog Tech</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/crear-topico.css">
+
+  <!-- JS -->
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/themes.js"></script>
+  <script defer src="js/crear-topico.js"></script>
+</head>
+
+<body>
+
+  <header>
+    <nav id="mainMenu">
+      <a href="index.html">Inicio</a>
+      <span id="adminMenu"></span>
+    </nav>
+
+    <div class="auth-theme-container">
+      <div id="authLinks">
+        <a id="loginLink" href="login.html">Iniciar sesión</a>
+        <a id="registerLink" href="register.html">Registrar</a>
+        <button id="logoutBtn">Cerrar sesión</button>
+      </div>
+      <button id="themeToggle" class="theme-toggle"></button>
+    </div>
+  </header>
+
+  <main class="home">
+    <section class="fade-in create-post-card">
+      <h2>Crear nuevo Post</h2>
+
+      <form id="crearTopicoForm" class="topico-form">
+        <div class="form-group">
+          <label for="titulo">Título</label>
+          <input type="text" id="titulo" name="titulo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="mensaje">Mensaje</label>
+          <textarea id="mensaje" name="mensaje" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="autor">Autor</label>
+          <input type="text" id="autor" name="autor" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="curso">Curso</label>
+          <input type="text" id="curso" name="curso" required>
+        </div>
+
+        <button type="submit" class="btn-primary">Crear tópico</button>
+      </form>
+
+
+      <div id="statusMessage"></div>
+    </section>
+  </main>
+
+</body>
+
+</html>

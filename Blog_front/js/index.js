@@ -1,297 +1,459 @@
-(async () => {
-  const token = localStorage.getItem('token');
-  let currentUser = null;
+// =========================
+// HELPER TOAST ✅ GLOBAL (FUERA DEL IIFE)
+// =========================
 
-  // =========================
-  // OBTENER USUARIO
-  // =========================
-  if (token) {
-    try {
-      const res = await fetch('http://localhost:8081/auth/me', {
-        headers: {Authorization: `Bearer ${token}`}
-      });
-      if (res.ok) {
-        currentUser = await res.json(); // { id, fullName, email, roles }
-      } else {
-        console.warn('No se pudo obtener currentUser, usando mock temporal');
-      }
-    } catch (e) {
-      console.error('Error obteniendo usuario', e);
+function showToast(message, type = 'info') {
+  const colors = {
+    success: 'linear-gradient(to right, #00b09b, #96c93d)',
+    error: 'linear-gradient(to right, #ff5f6d, #ffc371)',
+    warning: 'linear-gradient(to right, #f7971e, #ffd200)',
+    info: 'linear-gradient(to right, #4facfe, #00f2fe)'
+  };
+
+  Toastify({
+    text: message,
+    duration: 3000,
+    gravity: 'top',
+    position: 'right',
+    stopOnFocus: true,
+    style: {
+      background: colors[type] || colors.info
     }
-  }
+  }).showToast();
+}
 
-  const categoriesContainer = document.getElementById('categoriesContainer');
-  const postsContainer = document.getElementById('postsContainer');
-  const loadMoreBtn = document.getElementById('loadMoreBtn');
-  const searchInput = document.getElementById('searchInput');
-  const btnCrearPost = document.getElementById('btnCrearPost'); // botón ya presente en HTML
-
+// =========================
+// IIFE PRINCIPAL
+// =========================
+(async () => {
+  // CONFIG
   const BACKEND = 'http://localhost:8081';
   const pageSize = 6;
 
   let currentPage = 0;
-  let selectedCategory = null;
   let allLoadedPosts = [];
+  let searchTimeout = null;
 
-  const categoryColors = {
-    general: '#0077ff',
-    programacion: '#ff6600',
-    backend: '#33cc33',
-    data: '#9933ff',
-    'data & bi': '#9933ff',
-    devops: '#ffcc00',
-    repositorios: '#00cccc'
-  };
+  const token = localStorage.getItem('token');
+  let currentUser = null;
 
-  function normalizeCategory(name = '') {
-    return name
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .trim();
-  }
+  // ELEMENTOS DOM
+  const postsContainer = document.getElementById('postsContainer');
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+  const btnCrearTopico = document.getElementById('btnCrearTopico');
+  const adminMenu = document.getElementById('adminMenu');
+  const searchInput = document.getElementById('searchInput');
 
-  // =========================
-  // BOTÓN CREAR POST
-  // =========================
-  if (currentUser && ['USER', 'ADMIN', 'SUPER', 'COORDINATOR'].some(r => currentUser.roles.includes(r))) {
-    btnCrearPost.style.display = 'inline-block';
-    btnCrearPost.onclick = () => (location.href = 'crear-post.html');
-  } else {
-    btnCrearPost.style.display = 'none';
-  }
+  // MODAL HOME
+  const modalHome = document.getElementById('crearTopicoModal');
+  const topicoFormHome = document.getElementById('topicoFormHome');
+  const closeModalHome = document.getElementById('closeModalHome');
+  const cancelModalHome = document.getElementById('cancelModalHome');
+
+  // SELECT CURSO EN MODAL
+  const cursoSelect = document.getElementById('cursoSelect');
 
   // =========================
-  // CARGAR CATEGORÍAS
+  // CARGAR CURSOS PARA EL SELECT
   // =========================
-  async function cargarCategorias() {
+
+  // ✅ FUNCIÓN RECARGAR CURSOS (mejorada)
+  async function cargarCursosHome() {
+    const cursoSelect = document.getElementById('cursoSelect');
+    if (!cursoSelect) return;
+
     try {
-      const res = await fetch(`${BACKEND}/api/categories`, {
-        headers: token ? {Authorization: `Bearer ${token}`} : {}
+      const headers = {'Content-Type': 'application/json'};
+      if (token) headers.Authorization = `Bearer ${token}`;
+
+      const res = await fetch(`${BACKEND}/api/cursos`, {headers});
+
+      if (!res.ok) {
+        console.error('Error cargando cursos:', res.status);
+        return;
+      }
+
+      const cursos = await res.json();
+      cursoSelect.innerHTML = '<option value="">Seleccioná un curso</option>';
+
+      cursos.forEach(curso => {
+        const opt = document.createElement('option');
+        opt.value = curso.nombreVisible;
+        opt.textContent = curso.nombreVisible;
+        cursoSelect.appendChild(opt);
       });
 
-      if (!res.ok) throw new Error('No se pudieron cargar las categorías');
-
-      const categories = await res.json();
-      categoriesContainer.innerHTML = '';
-
-      // Categoría "Todas"
-      const allCard = document.createElement('div');
-      allCard.classList.add('category-card', 'clickable');
-      allCard.dataset.categoryId = '';
-      allCard.innerHTML = `<h2>Todas</h2>`;
-      const tabAll = document.createElement('div');
-      tabAll.classList.add('category-tab');
-      tabAll.style.backgroundColor = '#999';
-      allCard.appendChild(tabAll);
-
-      allCard.addEventListener('click', () => {
-        selectedCategory = null;
-        currentPage = 0;
-        allLoadedPosts = [];
-        cargarPosts(true);
-        resaltarCategoria(allCard);
-      });
-
-      categoriesContainer.appendChild(allCard);
-
-      // Resto de categorías
-      categories.forEach(cat => {
-        const normalized = normalizeCategory(cat.name);
-        const card = document.createElement('div');
-        card.classList.add('category-card', 'clickable');
-        card.dataset.categoryId = cat.id;
-        card.innerHTML = `<h2>${cat.name}</h2>`;
-        const tab = document.createElement('div');
-        tab.classList.add('category-tab');
-        tab.style.backgroundColor = categoryColors[normalized] || '#0077ff';
-        card.appendChild(tab);
-
-        card.addEventListener('click', () => {
-          selectedCategory = cat.id;
-          currentPage = 0;
-          allLoadedPosts = [];
-          cargarPosts(true);
-          resaltarCategoria(card);
-        });
-
-        categoriesContainer.appendChild(card);
-      });
+      // console.log('✅ Cursos cargados:', cursos.length); // Debug
     } catch (e) {
-      console.error('Error cargando categorías', e);
-      categoriesContainer.innerHTML = '<p>Error al cargar categorías</p>';
+      console.error('Error de red cargando cursos', e);
     }
   }
 
-  function resaltarCategoria(activeCard) {
-    document.querySelectorAll('.category-card').forEach(c => {
-      c.style.borderColor = '';
-      c.style.boxShadow = '';
-    });
-    activeCard.style.borderColor = 'var(--primary)';
-    activeCard.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-  }
+  // ✅ BOTÓN CREAR TÓPICO (recarga cursos)
+  btnCrearTopico.addEventListener('click', async e => {
+    e.preventDefault();
+    e.stopPropagation();
+    await cargarCursosHome(); // ← RECARGA
+    topicoFormHome.reset();
+    document.getElementById('modalTitleHome').textContent = 'Crear Nuevo Tópico';
+    delete topicoFormHome.dataset.editandoId;
+    modalHome.style.display = 'flex';
+  });
 
   // =========================
-  // RENDER POSTS
+  // OBTENER USUARIO LOGUEADO
   // =========================
+  if (token) {
+    try {
+      const res = await fetch(`${BACKEND}/auth/me`, {
+        headers: {Authorization: `Bearer ${token}`}
+      });
+
+      if (res.ok) {
+        currentUser = await res.json();
+      } else {
+        console.error('❌ Error al obtener usuario, status:', res.status);
+        localStorage.removeItem('token');
+      }
+    } catch (e) {
+      console.error('❌ Error obteniendo usuario', e);
+    }
+  } else {
+    console.log('⚠️ No hay token en localStorage');
+  }
+
+  // BOTÓN CREAR TÓPICO
+  if (btnCrearTopico) btnCrearTopico.style.display = 'none';
+
+  if (currentUser && btnCrearTopico && ['USER', 'ADMIN'].some(r => currentUser.roles.includes(r))) {
+    btnCrearTopico.style.display = 'inline-block';
+    btnCrearTopico.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      topicoFormHome.reset();
+      document.getElementById('modalTitleHome').textContent = 'Crear Nuevo Tópico';
+      delete topicoFormHome.dataset.editandoId;
+      modalHome.style.display = 'flex';
+    });
+  }
+
+  // PANEL ADMIN
+  if (currentUser && adminMenu && currentUser.roles.includes('ADMIN')) {
+    adminMenu.innerHTML = `
+      <a href="/admin/index.html" class="admin-link nav-btn">
+        🛠 Panel Admin
+      </a>
+    `;
+  }
+
+  // MODAL EVENTS
+  const closeModalSafe = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    modalHome.style.display = 'none';
+    topicoFormHome.reset();
+    delete topicoFormHome.dataset.editandoId;
+  };
+
+  closeModalHome?.addEventListener('click', closeModalSafe);
+  cancelModalHome?.addEventListener('click', closeModalSafe);
+
+  modalHome?.addEventListener('click', e => {
+    if (e.target === modalHome) {
+      modalHome.style.display = 'none';
+      topicoFormHome.reset();
+      delete topicoFormHome.dataset.editandoId;
+    }
+  });
+
+  // SEARCH EN TIEMPO REAL
+  if (searchInput) {
+    searchInput.addEventListener('input', async e => {
+      const query = e.target.value.trim();
+
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(async () => {
+        currentPage = 0;
+
+        if (query.length >= 2) {
+          await buscarTopicos(query);
+        } else {
+          await cargarTopicos(true);
+        }
+      }, 300);
+    });
+  }
+
+  // FUNCIÓN SEARCH BACKEND - ✅ CON ORDENAMIENTO
+  async function buscarTopicos(query) {
+    try {
+      const res = await fetch(
+        `${BACKEND}/topicos/search?q=${encodeURIComponent(query)}&page=0&size=20&sortBy=fechaCreacion&direction=DESC`,
+        {headers: token ? {Authorization: `Bearer ${token}`} : {}}
+      );
+
+      if (!res.ok) {
+        if (res.status === 400) {
+          showToast('Parámetros de búsqueda inválidos', 'warning');
+          return;
+        }
+        showToast('Error en búsqueda', 'error');
+        return;
+      }
+
+      const results = await res.json();
+      allLoadedPosts = results.content || [];
+      renderPosts(allLoadedPosts);
+
+      if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    } catch (e) {
+      console.error('Error búsqueda:', e);
+      showToast('Error de conexión en búsqueda', 'error');
+    }
+  }
+
+  // FUNCIÓN RESPONDER TÓPICO
+  async function responderTopico(topicoId, e) {
+    e.stopPropagation();
+
+    const result = await Swal.fire({
+      title: 'Responder Tópico',
+      input: 'textarea',
+      inputLabel: 'Tu respuesta',
+      inputPlaceholder: 'Escribe tu respuesta aquí...',
+      inputAttributes: {
+        'aria-label': 'Escribe tu respuesta',
+        rows: 5
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Enviar Respuesta',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3b82f6',
+      cancelButtonColor: '#6b7280',
+      inputValidator: value => {
+        if (!value || !value.trim()) {
+          return 'Debes escribir una respuesta';
+        }
+      }
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const res = await fetch(`${BACKEND}/topicos/${topicoId}/respuestas`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            mensaje: result.value,
+            solucion: false
+          })
+        });
+
+        if (res.ok) {
+          showToast('¡Respuesta enviada exitosamente!', 'success');
+        } else {
+          const error = await res.json().catch(() => ({}));
+          showToast(error.message || 'Error al enviar respuesta', 'error');
+        }
+      } catch (e) {
+        console.error('Error:', e);
+        showToast('Error de conexión al enviar respuesta', 'error');
+      }
+    }
+  }
+
+  // FUNCIÓN EDITAR TÓPICO - ✅ CORREGIDO
+  async function editarTopico(topico, e) {
+    e.stopPropagation();
+
+    document.getElementById('tituloHome').value = topico.titulo;
+    document.getElementById('mensajeHome').value = topico.mensaje;
+    document.getElementById('cursoSelect').value = topico.curso; // ✅ CAMBIADO
+    document.getElementById('modalTitleHome').textContent = 'Editar Tópico';
+
+    topicoFormHome.dataset.editandoId = topico.id;
+
+    modalHome.style.display = 'flex';
+  }
+
+  // CREAR/EDITAR TÓPICO DESDE HOME - ✅ CORREGIDO
+  if (topicoFormHome) {
+    topicoFormHome.addEventListener('submit', async e => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const titulo = document.getElementById('tituloHome').value;
+      const mensaje = document.getElementById('mensajeHome').value;
+      const curso = document.getElementById('cursoSelect').value; // ✅ CAMBIADO
+      const editandoId = topicoFormHome.dataset.editandoId;
+
+      if (!titulo.trim() || !mensaje.trim() || !curso.trim()) {
+        showToast('Título, mensaje y curso son obligatorios', 'error');
+        return;
+      }
+
+      try {
+        const method = editandoId ? 'PUT' : 'POST';
+        const url = editandoId ? `${BACKEND}/topicos/${editandoId}` : `${BACKEND}/topicos`;
+
+        const res = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({titulo, mensaje, curso})
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => null);
+          showToast(errorData?.message || `Error al ${editandoId ? 'actualizar' : 'crear'} tópico`, 'error');
+          return;
+        }
+
+        showToast(`¡Tópico ${editandoId ? 'actualizado' : 'creado'} exitosamente!`, 'success');
+        modalHome.style.display = 'none';
+        topicoFormHome.reset();
+        delete topicoFormHome.dataset.editandoId;
+        if (searchInput) searchInput.value = '';
+        currentPage = 0;
+        await cargarTopicos(true);
+      } catch (e) {
+        console.error(e);
+        showToast('Error de conexión', 'error');
+      }
+    });
+  }
+
+  // RENDER TÓPICOS
+  function capitalize(str) {
+    if (!str) return '';
+    return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
+  }
+
   function renderPosts(posts) {
     postsContainer.innerHTML = '';
 
-    posts.forEach(p => {
-      // console.log('Post completo:', p); // <-- Aquí verás todo el objeto
+    posts.forEach(t => {
       const card = document.createElement('div');
       card.classList.add('post-card');
 
-      const normalizedCategory = normalizeCategory(p.categoryName);
-      const color = categoryColors[normalizedCategory] || '#0077ff';
+      const fecha = new Date(t.fechaCreacion).toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
 
-      const tab = document.createElement('div');
-      tab.classList.add('category-tab');
-      tab.style.backgroundColor = color;
-      card.appendChild(tab);
+      // console.log('🔍 POSTS:', posts[0]);  // DEBUG
+      // ✅ DEFINIR esAutor ANTES de innerHTML
+      const esAutor = currentUser && (currentUser.id === t.autorId || currentUser.username === t.autor);
 
-      let dateText = '';
-      if (p.createdAt) {
-        const d = new Date(p.createdAt);
-        if (!isNaN(d.getTime())) {
-          dateText = d.toLocaleDateString('es-ES', {day: 'numeric', month: 'long'});
-        }
-      }
+      // ✅ DEBUG CANTIDAD
+    // console.log(`Topico ${t.id}: ${t.cantidadRespuestas} respuestas`);
 
-      card.innerHTML += `
-        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-          <div style="margin-left:16px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:1.5em;">👤</span>
-              <strong style="font-size:1.0em;">${p.authorName || 'Desconocido'}</strong>
-            </div>
-            ${dateText ? `<div style="color:#999; margin-left:48px;">${dateText}</div>` : ''}
-          </div>
-          ${
-            p.categoryName
-              ? `<div style="color:${color}; font-weight:600; margin-right:16px;">#${p.categoryName}</div>`
-              : ''
-          }
-        </div>
-        <h3 style="margin-left:100px; font-size:1.20em;">${p.title}</h3>
-        <p style="margin-left:100px; font-size:0.90em;">${p.mensaje || ''}</p>
-      `;
+      card.innerHTML = `
+      <div style="display:flex; justify-content:space-between;">
+        <strong>👤 ${capitalize(t.autor)}</strong>
+        <span style="color:#999;">${fecha}</span>
+      </div>
+      <h3 style="margin-top:8px;">${t.titulo}</h3>
+      <p style="color:#666; margin-top:8px;">
+        ${t.mensaje.length > 150 ? t.mensaje.substring(0, 150) + '...' : t.mensaje}
+      </p>
+      <div style="margin-top:10px; font-size:0.85em; color:#888;">
+        📚 ${t.curso}
+        <span style="margin-left:15px; opacity:${(t.cantidadRespuestas || 0) > 0 ? '1' : '0.5'};">
+          💬 Respuestas ${t.cantidadRespuestas || 0}
+        </span>
+      </div>
+    `;
 
-      // BOTONES DE ACCIÓN
+      // ✅ ACCIONES
       if (currentUser) {
-        const actions = document.createElement('div');
-        actions.classList.add('post-actions');
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'post-actions';
 
-        // Responder
-        const replyBtn = document.createElement('button');
-        replyBtn.textContent = 'Responder';
-        replyBtn.onclick = e => {
-          e.stopPropagation();
-          location.href = `reply-post.html?id=${p.id}`;
-        };
-        actions.appendChild(replyBtn);
+        const btnResponder = document.createElement('button');
+        btnResponder.className = 'btn-responder';
+        btnResponder.textContent = '💬 Responder';
+        btnResponder.onclick = e => responderTopico(t.id, e);
+        actionsDiv.appendChild(btnResponder);
 
-        // Editar y Cerrar/Abrir
-        if (currentUser.id === p.authorId) {
-          const editBtn = document.createElement('button');
-          editBtn.textContent = 'Editar';
-          editBtn.onclick = e => {
-            e.stopPropagation();
-            location.href = `edit-post.html?id=${p.id}`;
-          };
-          actions.appendChild(editBtn);
-
-          const toggleBtn = document.createElement('button');
-          toggleBtn.textContent = p.status === 'ABIERTO' ? 'Cerrar' : 'Abrir';
-          toggleBtn.onclick = async e => {
-            e.stopPropagation();
-            await fetch(`${BACKEND}/api/posts/${p.id}/status`, {
-              method: 'PUT',
-              headers: {'Content-Type': 'application/json', Authorization: `Bearer ${token}`},
-              body: JSON.stringify({status: p.status === 'ABIERTO' ? 'CERRADO' : 'ABIERTO'})
-            });
-            currentPage = 0;
-            allLoadedPosts = [];
-            cargarPosts(true);
-          };
-          actions.appendChild(toggleBtn);
+        if (esAutor) {
+          const btnEditar = document.createElement('button');
+          btnEditar.className = 'btn-editar';
+          btnEditar.textContent = '✏️ Editar';
+          btnEditar.onclick = e => editarTopico(t, e);
+          actionsDiv.appendChild(btnEditar);
         }
 
-        // Eliminar (admin/super)
-        if (currentUser.roles.includes('ADMIN') || currentUser.roles.includes('SUPER')) {
-          const deleteBtn = document.createElement('button');
-          deleteBtn.textContent = 'Eliminar';
-          deleteBtn.onclick = async e => {
-            e.stopPropagation();
-            if (confirm('¿Seguro que quieres eliminar este post?')) {
-              await fetch(`${BACKEND}/api/posts/${p.id}`, {
-                method: 'DELETE',
-                headers: {Authorization: `Bearer ${token}`}
-              });
-              currentPage = 0;
-              allLoadedPosts = [];
-              cargarPosts(true);
-            }
-          };
-          actions.appendChild(deleteBtn);
+        if (actionsDiv.children.length > 0) {
+          card.appendChild(actionsDiv);
         }
-
-        card.appendChild(actions);
       }
 
-      card.onclick = () => {
-        location.href = `post.html?id=${p.id}`;
-      };
+      card.addEventListener('click', e => {
+        if (!e.target.closest('.post-actions')) {
+          location.href = `topico.html?id=${t.id}`;
+        }
+      });
 
       postsContainer.appendChild(card);
     });
   }
 
-  // =========================
-  // CARGAR POSTS
-  // =========================
-  async function cargarPosts(reset = false) {
+  // CARGAR TÓPICOS - ✅ CON ORDENAMIENTO Y VALIDACIÓN
+  async function cargarTopicos(reset = false) {
     try {
-      let url = `${BACKEND}/api/posts?page=${currentPage}&size=${pageSize}`;
-      if (selectedCategory) url += `&categoryId=${selectedCategory}`;
-      const searchValue = searchInput?.value.trim();
-      if (searchValue) url += `&search=${encodeURIComponent(searchValue)}`;
+      const url = `${BACKEND}/topicos?page=${currentPage}&size=${pageSize}&sortBy=fechaCreacion&direction=DESC`;
 
-      const res = await fetch(url, {headers: token ? {Authorization: `Bearer ${token}`} : {}});
-      const posts = await res.json();
-      if (reset) {
-        postsContainer.innerHTML = '';
-        allLoadedPosts = [];
+      const res = await fetch(url, {
+        headers: token ? {Authorization: `Bearer ${token}`} : {}
+      });
+
+      if (!res.ok) {
+        if (res.status === 400) {
+          showToast('Parámetros de ordenamiento inválidos', 'warning');
+          return;
+        }
+        const err = await res.json().catch(() => ({}));
+        showToast(err.message || 'Error cargando tópicos', 'error');
+        return;
       }
 
-      allLoadedPosts = [...allLoadedPosts, ...posts];
+      const page = await res.json();
+
+      if (reset) {
+        allLoadedPosts = [];
+        postsContainer.innerHTML = '';
+      }
+
+      allLoadedPosts = [...allLoadedPosts, ...page.content];
       renderPosts(allLoadedPosts);
 
-      loadMoreBtn.style.display = posts.length < pageSize ? 'none' : 'inline-block';
+      if (loadMoreBtn) {
+        const isLast = page.page + 1 >= page.totalPages;
+        loadMoreBtn.style.display = isLast ? 'none' : 'inline-block';
+      }
     } catch (e) {
-      console.error('Error cargando posts', e);
-      postsContainer.innerHTML = '<p>Error al cargar posts</p>';
+      console.error(e);
+      showToast('Error al cargar tópicos', 'error');
     }
   }
 
-  // =========================
   // EVENTOS
-  // =========================
-  loadMoreBtn?.addEventListener('click', () => {
-    currentPage++;
-    cargarPosts();
-  });
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      currentPage++;
+      cargarTopicos();
+    });
+  }
 
-  searchInput?.addEventListener('input', () => {
-    currentPage = 0;
-    allLoadedPosts = [];
-    cargarPosts(true);
-  });
-
-  // =========================
   // INIT
-  // =========================
-  cargarCategorias();
-  cargarPosts();
+  await cargarCursosHome(); // ✅ Carga cursos al inicio
+  cargarTopicos();
 })();

@@ -1,5 +1,45 @@
 window.initUsers = function () {
   // --------------------
+  // HELPER TOAST
+  // --------------------
+  function showToast(message, type = 'info') {
+    const colors = {
+      success: 'linear-gradient(to right, #00b09b, #96c93d)',
+      error: 'linear-gradient(to right, #ff5f6d, #ffc371)',
+      warning: 'linear-gradient(to right, #f7971e, #ffd200)',
+      info: 'linear-gradient(to right, #4facfe, #00f2fe)'
+    };
+
+    Toastify({
+      text: message,
+      duration: 3000,
+      gravity: 'top',
+      position: 'right',
+      stopOnFocus: true,
+      style: {
+        background: colors[type] || colors.info,
+      }
+    }).showToast();
+  }
+
+  // --------------------
+  // HELPER CONFIRM
+  // --------------------
+  async function showConfirm(title, text) {
+    const result = await Swal.fire({
+      title: title,
+      text: text,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, continuar',
+      cancelButtonText: 'Cancelar'
+    });
+    return result.isConfirmed;
+  }
+
+  // --------------------
   // AUTH
   // --------------------
   const token = localStorage.getItem('token');
@@ -23,7 +63,7 @@ window.initUsers = function () {
   }
 
   let currentPage = 0;
-  const pageSize = 10;
+  const pageSize = 6;
 
   // --------------------
   // LOGOUT
@@ -45,16 +85,17 @@ window.initUsers = function () {
       });
 
       if (!res.ok) {
-        alert('Error al cargar usuarios');
+        showToast('Error al cargar usuarios', 'error');
         return;
       }
-
+      
       const pageData = await res.json();
-
       renderizarUsuarios(pageData.content);
       renderPagination(pageData);
+      window.refreshStats();
     } catch (e) {
       console.error(e);
+      showToast('Error de conexión al cargar usuarios', 'error');
     }
   }
 
@@ -140,34 +181,39 @@ window.initUsers = function () {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
-        alert(errorData?.message || 'Error al guardar usuario');
+        showToast(errorData?.error || errorData?.message || 'Error al guardar usuario', 'error');
         return;
       }
-
+      
+      showToast(`Usuario ${id ? 'actualizado' : 'creado'} exitosamente`, 'success');
       userForm.reset();
       document.getElementById('userId').value = '';
       currentPage = 0;
       cargarUsuarios();
+      window.refreshStats();
     } catch (e) {
       console.error(e);
-      alert('Error de conexión al guardar usuario');
+      showToast('Error de conexión al guardar usuario', 'error');
     }
   });
 
   // --------------------
-  // EDITAR USUARIO (FIX)
+  // EDITAR USUARIO
   // --------------------
   window.editarUsuario = async id => {
     try {
-      const res = await fetch(`http://localhost:8081/admin/users?page=${currentPage}&size=${pageSize}`, {
+      const res = await fetch(`http://localhost:8081/admin/users/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
 
-      const pageData = await res.json();
-      const usuario = pageData.content.find(u => u.id === id);
-      if (!usuario) return;
+      if (!res.ok) {
+        showToast('Error al cargar datos del usuario', 'error');
+        return;
+      }
+
+      const usuario = await res.json();
 
       document.getElementById('userId').value = usuario.id;
       document.getElementById('fullName').value = usuario.fullName;
@@ -179,36 +225,52 @@ window.initUsers = function () {
       Array.from(rolesSelect.options).forEach(opt => {
         opt.selected = usuario.roles.includes(opt.value);
       });
+
+      userForm.scrollIntoView({ behavior: 'smooth' });
+      window.refreshStats();
     } catch (e) {
       console.error(e);
-      alert('Error al cargar datos del usuario');
+      showToast('Error de conexión al cargar datos del usuario', 'error');
     }
   };
 
   // --------------------
-  // ELIMINAR USUARIO
+  // TOGGLE USUARIO (HABILITAR/DESHABILITAR)
   // --------------------
   window.toggleUsuario = async (id, currentStatus) => {
-    if (!confirm(`${currentStatus ? 'Desactivar' : 'Activar'} usuario?`)) return;
+    const nuevoEstado = !currentStatus;
+    const accion = nuevoEstado ? 'activar' : 'desactivar';
+    
+    // Reemplazar confirm() por SweetAlert2
+    const confirmed = await showConfirm(
+      '¿Estás seguro?',
+      `¿Deseas ${accion} este usuario?`
+    );
+    
+    if (!confirmed) return;
 
     try {
       const res = await fetch(`http://localhost:8081/admin/users/${id}`, {
-        method: 'DELETE', // tu backend interpreta esto como toggle de enabled
+        method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({ enabled: nuevoEstado })
       });
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
-        alert(errorData?.message || 'Error al cambiar el estado del usuario');
+        showToast(errorData?.error || 'Error al cambiar el estado del usuario', 'error');
         return;
       }
 
-      cargarUsuarios(); // recarga la tabla
+      showToast(`Usuario ${nuevoEstado ? 'activado' : 'desactivado'} exitosamente`, 'success');
+      cargarUsuarios();
+      window.refreshStats();
     } catch (e) {
       console.error(e);
-      alert('Error de conexión al cambiar el estado del usuario');
+      showToast('Error de conexión al cambiar el estado del usuario', 'error');
     }
   };
 
@@ -216,4 +278,5 @@ window.initUsers = function () {
   // INIT
   // --------------------
   cargarUsuarios();
+  window.refreshStats();
 };

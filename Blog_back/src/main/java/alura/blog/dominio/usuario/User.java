@@ -1,112 +1,77 @@
-//package alura.blog.dominio.usuario;
-//
-//import jakarta.persistence.*;
-//import lombok.*;
-//
-//import java.time.LocalDateTime;
-//import java.util.Set;
-//
-//@Entity
-//@Table(name = "users")
-//@Getter
-//@Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@EqualsAndHashCode(of = "id")
-//public class User {
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-//
-//    @Column(name = "full_name")
-//    private String fullName;
-//
-//    @Column(unique = true, nullable = false)
-//    private String email;
-//
-//    private String password;
-//
-//    private Boolean enabled = true;
-//
-//    @ElementCollection(fetch = FetchType.EAGER)
-//    @CollectionTable(
-//            name = "user_roles",
-//            joinColumns = @JoinColumn(name = "user_id")
-//    )
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "role")
-//    private Set<Role> roles;
-//
-//    @Column(name = "created_at")
-//    private LocalDateTime createdAt;
-//
-//    @Column(name = "updated_at")
-//    private LocalDateTime updatedAt;
-//
-//    @PrePersist
-//    void onCreate() {
-//        createdAt = LocalDateTime.now();
-//    }
-//
-//    @PreUpdate
-//    void onUpdate() {
-//        updatedAt = LocalDateTime.now();
-//    }
-//}
-
 package alura.blog.dominio.usuario;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "full_name")
+    @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
-    private Boolean enabled = true;
+    @Column(nullable = false)
+    private boolean enabled = true;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
             name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id")
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    void onCreate() {
-        createdAt = LocalDateTime.now();
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                .collect(Collectors.toSet());
     }
 
-    @PreUpdate
-    void onUpdate() {
-        updatedAt = LocalDateTime.now();
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // siempre válido
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // siempre desbloqueado
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // siempre válido
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
     }
 }

@@ -1,158 +1,54 @@
-//package alura.blog.dominio.usuario;
-//
-//import alura.blog.infra.security.TokenService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.Set;
-//import java.util.stream.Collectors;
-//
-//@Service
-//public class UserService {
-//
-//    private final UserRepository repo;
-//    private final TokenService tokenService;
-//
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-//
-//    public UserService(UserRepository repo, TokenService tokenService) {
-//        this.repo = repo;
-//        this.tokenService = tokenService;
-//    }
-//
-//    // ------------------------
-//    // Registro y login
-//    // ------------------------
-//    public void register(DatosRegistroUsuario datos) {
-//
-//        if (repo.findByEmail(datos.email()).isPresent()) {
-//            throw new RuntimeException("Email ya registrado");
-//        }
-//
-//        User user = new User(
-//                null,
-//                datos.fullName(),
-//                datos.email(),
-//                passwordEncoder.encode(datos.password()),
-//                true,
-//                Set.of(Role.ROLE_USER),
-//                null,
-//                null
-//        );
-//
-//        repo.save(user);
-//    }
-//
-//    public String login(DatosLoginUsuario datos) {
-//
-//        User user = repo.findByEmail(datos.email())
-//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-//
-//        if (!passwordEncoder.matches(datos.password(), user.getPassword())) {
-//            throw new RuntimeException("Credenciales inválidas");
-//        }
-//
-//        return tokenService.generarToken(user);
-//    }
-//
-//    // ------------------------
-//    // Métodos ADMIN
-//    // ------------------------
-//    public User crearUsuarioAdmin(DatosAdminUsuario datos) {
-//
-//        User user = new User();
-//        user.setFullName(datos.fullName());
-//        user.setEmail(datos.email());
-//        user.setEnabled(Boolean.TRUE.equals(datos.enabled()));
-//
-//        if (datos.password() != null && !datos.password().isBlank()) {
-//            user.setPassword(passwordEncoder.encode(datos.password()));
-//        }
-//
-//        Set<Role> roles = datos.roles().stream()
-//                .map(Role::valueOf)
-//                .collect(Collectors.toSet());
-//
-//        user.setRoles(roles);
-//
-//        return repo.save(user);
-//    }
-//
-//    public User actualizarUsuarioAdmin(Long id, DatosAdminUsuario datos) {
-//
-//        User user = repo.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-//
-//        if (datos.fullName() != null) user.setFullName(datos.fullName());
-//        if (datos.email() != null) user.setEmail(datos.email());
-//        if (datos.enabled() != null) user.setEnabled(datos.enabled());
-//
-//        if (datos.password() != null && !datos.password().isBlank()) {
-//            user.setPassword(passwordEncoder.encode(datos.password()));
-//        }
-//
-//        if (datos.roles() != null) {
-//            Set<Role> roles = datos.roles().stream()
-//                    .map(Role::valueOf)
-//                    .collect(Collectors.toSet());
-//            user.setRoles(roles);
-//        }
-//
-//        return repo.save(user);
-//    }
-//
-//
-//    public void eliminarUsuarioAdmin(Long id) {
-//        repo.deleteById(id);
-//    }
-//
-//    public Page<User> listarUsuarios(Pageable pageable) {
-//        return repo.findAll(pageable);
-//    }
-//
-//    // ------------------------
-//    // Uso interno (PostController, etc)
-//    // ------------------------
-//    public User findByEmail(String email) {
-//        return repo.findByEmail(email)
-//                .orElseThrow(() ->
-//                        new RuntimeException("Usuario no encontrado con email: " + email));
-//    }
-//}
-
 package alura.blog.dominio.usuario;
 
-import alura.blog.infra.security.TokenService;
-import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+/**
+ * Servicio para registrar usuarios
+ */
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository repo;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
+    private final RoleRepository roleRepository;
 
-    // ------------------------
-    // REGISTRO
-    // ------------------------
-    @Transactional
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
+    }
+
     public void register(DatosRegistroUsuario datos) {
-        if (repo.findByEmail(datos.email()).isPresent()) {
-            throw new RuntimeException("Email ya registrado");
+        User user = new User();
+        user.setFullName(datos.fullName());
+        user.setEmail(datos.email());
+        user.setPassword(passwordEncoder.encode(datos.password()));
+        user.setRoles(new HashSet<>());
+
+        // asignar rol USER por defecto
+        Role userRole = roleRepository.findByName("USER")
+                .orElseThrow(() -> new RuntimeException("Role USER no encontrado"));
+        user.getRoles().add(userRole);
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public DatosListadoUsuario crearUsuarioAdmin(DatosCrearUsuarioAdmin datos) {
+        // Validar que el email no esté en uso
+        if (userRepository.findByEmail(datos.email()).isPresent()) {
+            throw new IllegalArgumentException("El email ya está registrado");
         }
 
         User user = new User();
@@ -160,93 +56,137 @@ public class UserService {
         user.setEmail(datos.email());
         user.setPassword(passwordEncoder.encode(datos.password()));
         user.setEnabled(true);
-        user.setRoles(Set.of(Role.USER));
 
-        repo.save(user);
-    }
-
-    // ------------------------
-    // LOGIN
-    // ------------------------
-    @Transactional(readOnly = true)
-    public String login(DatosLoginUsuario datos) {
-        User user = repo.findByEmail(datos.email())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        if (!passwordEncoder.matches(datos.password(), user.getPassword())) {
-            throw new RuntimeException("Credenciales inválidas");
+        // Asignar roles
+        Set<Role> roles = new HashSet<>();
+        if (datos.roles() == null || datos.roles().isEmpty()) {
+            // Si no se especifican roles, asignar USER por defecto
+            Role userRole = roleRepository.findByName("USER")
+                    .orElseThrow(() -> new RuntimeException("Role USER no encontrado"));
+            roles.add(userRole);
+        } else {
+            // Asignar los roles especificados
+            for (String roleName : datos.roles()) {
+                Role role = roleRepository.findByName(roleName.toUpperCase())
+                        .orElseThrow(() -> new RuntimeException("Role " + roleName + " no encontrado"));
+                roles.add(role);
+            }
         }
-
-        return tokenService.generarToken(user);
-    }
-
-    // ------------------------
-    // ADMIN
-    // ------------------------
-    @Transactional
-    public User crearUsuarioAdmin(DatosAdminUsuario datos) {
-        User user = new User();
-        user.setFullName(datos.fullName());
-        user.setEmail(datos.email());
-        user.setEnabled(Boolean.TRUE.equals(datos.enabled()));
-
-        if (datos.password() != null && !datos.password().isBlank()) {
-            user.setPassword(passwordEncoder.encode(datos.password()));
-        }
-
-        Set<Role> roles = datos.roles().stream()
-                .map(Role::valueOf)
-                .collect(Collectors.toSet());
         user.setRoles(roles);
 
-        return repo.save(user);
+        User usuarioGuardado = userRepository.save(user);
+        return new DatosListadoUsuario(usuarioGuardado);
+    }
+
+    public User obtenerPorEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Usuario no encontrado"));
+    }
+
+    public Page<DatosListadoUsuario> listarUsuarios(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(DatosListadoUsuario::new);
     }
 
     @Transactional
-    public User actualizarUsuarioAdmin(Long id, DatosAdminUsuario datos) {
-        User user = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public DatosListadoUsuario actualizarUsuario(Long id, DatosActualizarUsuario datos) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + id));
 
-        if (datos.fullName() != null) user.setFullName(datos.fullName());
-        if (datos.email() != null) user.setEmail(datos.email());
+        // Actualización parcial: solo actualiza los campos no nulos
+        if (datos.fullName() != null && !datos.fullName().isBlank()) {
+            user.setFullName(datos.fullName());
+        }
+
+        if (datos.email() != null && !datos.email().isBlank()) {
+            // Verificar que el email no esté en uso por otro usuario
+            userRepository.findByEmail(datos.email()).ifPresent(existingUser -> {
+                if (!existingUser.getId().equals(id)) {
+                    throw new IllegalArgumentException("El email ya está registrado por otro usuario");
+                }
+            });
+            user.setEmail(datos.email());
+        }
+
         if (datos.password() != null && !datos.password().isBlank()) {
             user.setPassword(passwordEncoder.encode(datos.password()));
         }
-        if (datos.enabled() != null) user.setEnabled(datos.enabled());
 
-        if (datos.roles() != null) {
-            user.setRoles(datos.roles().stream()
-                    .map(Role::valueOf)
-                    .collect(Collectors.toSet()));
+        if (datos.enabled() != null) {
+            user.setEnabled(datos.enabled());
         }
 
-        return repo.save(user);
+        if (datos.roles() != null && !datos.roles().isEmpty()) {
+            Set<Role> roles = new HashSet<>();
+            for (String roleName : datos.roles()) {
+                Role role = roleRepository.findByName(roleName.toUpperCase())
+                        .orElseThrow(() -> new RuntimeException("Role " + roleName + " no encontrado"));
+                roles.add(role);
+            }
+            user.setRoles(roles);
+        }
+
+        User usuarioActualizado = userRepository.save(user);
+        return new DatosListadoUsuario(usuarioActualizado);
+    }
+
+    public DatosListadoUsuario obtenerUsuarioPorId(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + id));
+        return new DatosListadoUsuario(user);
     }
 
     @Transactional
-    public User eliminarUsuarioAdmin(Long id) {
-        User user = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public void eliminarUsuario(Long id) {
+        // Verificar que el usuario existe
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + id));
 
-        user.setEnabled(!user.getEnabled());
-        return repo.save(user);
+        // Verificar que no esté ya deshabilitado
+        if (!user.isEnabled()) {
+            throw new IllegalArgumentException("El usuario ya está deshabilitado");
+        }
+
+        // Prevenir que el admin se elimine a sí mismo
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailActual = authentication.getName();
+
+        if (user.getEmail().equals(emailActual)) {
+            throw new IllegalArgumentException("No puedes eliminar tu propia cuenta de administrador");
+        }
+
+        user.setEnabled(false);
+        userRepository.save(user);
     }
 
+    // AGREGAR ESTE MÉTODO a tu UserService (después de eliminarUsuario)
+    @Transactional
+    public DatosListadoUsuario habilitarUsuario(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + id));
+
+        if (user.isEnabled()) {
+            throw new IllegalArgumentException("El usuario ya está habilitado");
+        }
+
+        user.setEnabled(true);
+        User usuarioHabilitado = userRepository.save(user);
+        return new DatosListadoUsuario(usuarioHabilitado);
+    }
+
+
+    // Método adicional para restaurar/habilitar usuario
     @Transactional(readOnly = true)
-    public Page<User> listarUsuarios(Pageable pageable) {
-        return repo.findAll(pageable);
-    }
+    public Map<String, Long> obtenerEstadisticas() {
+        long activos = userRepository.countByEnabledTrue();
+        long inactivos = userRepository.countByEnabledFalse();
+        long administradores = userRepository.countByEnabledTrueAndRolesName("ADMIN");
 
-    @Transactional(readOnly = true)
-    public User findByEmail(String email) {
-        return repo.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return Map.of(
+                "activos", activos,
+                "inactivos", inactivos,
+                "administradores", administradores
+        );
     }
-
-    @Transactional(readOnly = true)
-    public List<User> listarUsuariosHabilitados() {
-        return repo.findByEnabledTrue(); // solo usuarios habilitados
-    }
-
 }
-

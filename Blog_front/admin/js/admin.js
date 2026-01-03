@@ -1,61 +1,4 @@
-// (() => {
-//   const token = localStorage.getItem('token');
-//   if (!token) {
-//     location.href = '../login.html';
-//     return;
-//   }
-
-//   const content = document.getElementById('adminContent');
-//   const buttons = document.querySelectorAll('[data-view]');
-//   const logoutBtn = document.getElementById('logoutBtn');
-
-//   logoutBtn?.addEventListener('click', () => {
-//     localStorage.removeItem('token');
-//     location.href = '../login.html';
-//   });
-
-//   async function loadView(view) {
-//     try {
-//       const res = await fetch(`./partials/${view}.html`);
-//       if (!res.ok) throw new Error('Vista no encontrada');
-
-//       content.innerHTML = await res.text();
-
-//       // eliminar script previo
-//       const oldScript = document.getElementById('adminViewScript');
-//       if (oldScript) oldScript.remove();
-
-//       const script = document.createElement('script');
-//       script.src = `./js/${view}.js`;
-//       script.id = 'adminViewScript';
-
-//       script.onload = () => {
-//         // 🔥 inicializar vista si existe
-//         const initFn = window[`init${view.charAt(0).toUpperCase() + view.slice(1)}`];
-//         if (typeof initFn === 'function') {
-//           initFn();
-//         }
-//       };
-
-//       document.body.appendChild(script);
-
-//     } catch (e) {
-//       console.error(e);
-//       content.innerHTML = '<p>Error al cargar la vista</p>';
-//     }
-//   }
-
-//   buttons.forEach(btn => {
-//     btn.addEventListener('click', () => {
-//       loadView(btn.dataset.view);
-//     });
-//   });
-// })();
-
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // =============================
   // VARIABLES GLOBALES
   // =============================
@@ -65,14 +8,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeBtn = document.getElementById('themeToggle');
   const logoutBtn = document.getElementById('logoutBtn');
   const currentPage = window.location.pathname.split('/').pop();
-  const protectedPages = [
-    'index.html',
-    'blog.html',
-    'post.html',
-    'admin/index.html'
-  ];
+  const protectedPages = ['index.html', 'blog.html', 'post.html', 'admin/index.html'];
   const SESSION_TIMEOUT = 15 * 60 * 1000; // 15 min
-  let inactivityTimer;
+  let sessionExpirationTime;
+  let tokenCheckInterval;
+  let inactivityCheckInterval;
+  let currentAbortController = null;
+
+  // =============================
+  // HELPER FUNCTIONS
+  // =============================
+  function getElementSafe(id) {
+    const element = document.getElementById(id);
+    if (!element) console.warn(`Element #${id} not found`);
+    return element || {textContent: ''};
+  }
 
   // =============================
   // TEMA
@@ -96,6 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // FUNCIÓN LOGOUT
   // =============================
   function logout(msg) {
+    if (tokenCheckInterval) clearInterval(tokenCheckInterval);
+    if (inactivityCheckInterval) clearInterval(inactivityCheckInterval);
     alert(msg || 'Tu sesión ha expirado.');
     localStorage.removeItem(tokenKey);
     window.location.href = '/login.html';
@@ -150,95 +102,179 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =============================
-  // MENÚS SEGÚN ROL
+  // NAVEGACIÓN MEJORADA
   // =============================
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const roles = payload.roles || [];
-
-      const isUser =
-        roles.includes('USER') ||
-        roles.includes('COORDINATOR') ||
-        roles.includes('ADMIN') ||
-        roles.includes('SUPER');
-
-      const isAdmin = roles.includes('ADMIN') || roles.includes('SUPER');
-
-      if (isUser) {
-        const postMenu = document.getElementById('postMenu');
-        postMenu && (postMenu.innerHTML = `<a href="blog.html">Blog</a>`);
-      }
-
-      if (isAdmin) {
-        const adminMenu = document.getElementById('adminMenu');
-        adminMenu && (adminMenu.innerHTML = `<a href="admin/index.html">Panel Admin</a>`);
-      }
-    } catch (e) {
-      console.error('Error al leer roles del token:', e);
-    }
-  }
-
-  // =============================
-  // TIMEOUT DE INACTIVIDAD
-  // =============================
-  function resetInactivityTimer() {
-    clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(() => {
-      logout('Sesión cerrada por inactividad.');
-    }, SESSION_TIMEOUT);
-  }
-
-  ['mousemove', 'keydown', 'click', 'scroll'].forEach(evt =>
-    document.addEventListener(evt, resetInactivityTimer)
-  );
-
-  resetInactivityTimer();
-
-  // Revisar token cada minuto
-  setInterval(() => {
-    const currentToken = localStorage.getItem(tokenKey);
-    if (!currentToken || isTokenExpired(currentToken)) {
-      logout('Tu sesión ha expirado.');
-    }
-  }, 60000);
-
-  // =============================
-  // CARGA DINÁMICA DE VISTAS (USERS / POSTS)
-  // =============================
+  const navButtons = document.querySelectorAll('.nav-btn[data-action]');
   const content = document.getElementById('adminContent');
-  const buttons = document.querySelectorAll('[data-view]');
 
+  function setActiveNav(action) {
+    navButtons.forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-action="${action}"]`)?.classList.add('active');
+  }
+
+  function handleNavAction(action) {
+    setActiveNav(action);
+
+    switch (action) {
+      case 'home':
+        window.location.href = '../index.html';
+        break;
+      case 'dashboard':
+        if (content) content.style.display = 'none';
+        break;
+      case 'users':
+      case 'topicos':
+        if (content) content.style.display = 'block';
+        const view = action;
+        loadView(view);
+        break;
+    }
+  }
+
+  // Event listeners para navegación
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      handleNavAction(btn.dataset.action);
+    });
+  });
+
+  // =============================
+  // CARGA DINÁMICA DE VISTAS
+  // =============================
   async function loadView(view) {
+    if (content) {
+      content.style.display = 'block';
+    }
+
+    if (currentAbortController) {
+      currentAbortController.abort();
+    }
+
+    currentAbortController = new AbortController();
+    const {signal} = currentAbortController;
+
     try {
-      const res = await fetch(`./partials/${view}.html`);
+      content.innerHTML = '<div class="loading">Cargando...</div>';
+
+      const res = await fetch(`./partials/${view}.html`, {signal});
       if (!res.ok) throw new Error('Vista no encontrada');
 
       content.innerHTML = await res.text();
 
-      // eliminar script previo
       const oldScript = document.getElementById('adminViewScript');
       oldScript?.remove();
 
       const script = document.createElement('script');
       script.src = `./js/${view}.js`;
       script.id = 'adminViewScript';
+      document.body.appendChild(script);
 
       script.onload = () => {
         const initFn = window[`init${view.charAt(0).toUpperCase() + view.slice(1)}`];
-        typeof initFn === 'function' && initFn();
+        if (typeof initFn === 'function') initFn();
       };
-
-      document.body.appendChild(script);
     } catch (e) {
-      console.error(e);
-      content.innerHTML = '<p>Error al cargar la vista</p>';
+      if (e.name !== 'AbortError') {
+        console.error(e);
+        content.innerHTML = '<p class="error">Error al cargar la vista</p>';
+      }
     }
   }
 
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      loadView(btn.dataset.view);
-    });
+  // =============================
+  // DASHBOARD GENERAL - FUNCIÓN GLOBAL ✅
+  // =============================
+  async function cargarStatsGenerales() {
+    console.log('📊 Dashboard general...');
+
+    // TÓPICOS
+    try {
+      const resTopicos = await fetch('http://localhost:8081/admin/topicos/estadisticas', {
+        headers: {Authorization: `Bearer ${token}`}
+      });
+      if (resTopicos.ok) {
+        const data = await resTopicos.json();
+        getElementSafe('abiertos-count').textContent = data.abiertos || 0;
+        getElementSafe('cerrados-count').textContent = data.cerrados || 0;
+        getElementSafe('eliminados-count').textContent = data.eliminados || 0;
+        console.log('✅ Tópicos:', data);
+      }
+    } catch (e) {
+      console.error('❌ Tópicos:', e);
+    }
+
+    // USUARIOS
+    try {
+      const resUsuarios = await fetch('http://localhost:8081/admin/users/estadisticas', {
+        headers: {Authorization: `Bearer ${token}`}
+      });
+      if (resUsuarios.ok) {
+        const data = await resUsuarios.json();
+        getElementSafe('usuarios-activos-count').textContent = data.activos || 0;
+        getElementSafe('usuarios-inactivos-count').textContent = data.inactivos || 0;
+        getElementSafe('usuarios-admin-count').textContent = data.administradores || 0;
+        console.log('✅ Usuarios:', data);
+      }
+    } catch (e) {
+      console.warn('❌ Usuarios:', e);
+    }
+  }
+
+  // =============================
+  // 🔥 AUTO-REFRESH GLOBAL - PARA USERS Y TOPICOS
+  // =============================
+  window.cargarStatsGenerales = cargarStatsGenerales;
+  window.refreshStats = async () => {
+    console.log('🔄 Refrescando estadísticas automáticamente...');
+    try {
+      await cargarStatsGenerales();
+      console.log('✅ Estadísticas actualizadas');
+    } catch (e) {
+      console.error('❌ Error refrescando stats:', e);
+    }
+  };
+
+  // =============================
+  // INICIALIZACIÓN
+  // =============================
+  try {
+    await cargarStatsGenerales();
+    setActiveNav('dashboard');
+    if (content) content.style.display = 'none';
+  } catch (e) {
+    console.error('Error en inicialización:', e);
+  }
+
+  // =============================
+  // TIMERS
+  // =============================
+  function resetInactivityTimer() {
+    sessionExpirationTime = Date.now() + SESSION_TIMEOUT;
+  }
+
+  function checkSessionTimeout() {
+    if (Date.now() >= sessionExpirationTime) {
+      logout('Sesión cerrada por inactividad.');
+    }
+  }
+
+  resetInactivityTimer();
+  inactivityCheckInterval = setInterval(checkSessionTimeout, 1000);
+
+  ['mousemove', 'keydown', 'click', 'scroll'].forEach(evt =>
+    document.addEventListener(evt, resetInactivityTimer, {passive: true})
+  );
+
+  tokenCheckInterval = setInterval(() => {
+    const currentToken = localStorage.getItem(tokenKey);
+    if (!currentToken || isTokenExpired(currentToken)) {
+      logout('Tu sesión ha expirado.');
+    }
+  }, 15000);
+
+  window.addEventListener('beforeunload', () => {
+    if (tokenCheckInterval) clearInterval(tokenCheckInterval);
+    if (inactivityCheckInterval) clearInterval(inactivityCheckInterval);
+    if (currentAbortController) currentAbortController.abort();
   });
 });

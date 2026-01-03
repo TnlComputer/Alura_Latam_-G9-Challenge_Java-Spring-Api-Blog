@@ -1,3 +1,10 @@
 package alura.blog.infra.security;
 
-public record DatosJWTToken(String token) {}
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class DatosJWTToken {
+    private String token;
+}
