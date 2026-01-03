@@ -1,5 +1,7 @@
 # 📝 Alura Blog / Foro - API REST + Frontend
 
+![Bagde Spring}](docs/images/Badge-Spring.png)
+
 ## Proyecto desarrollado como parte del Challenge Alura Latam, que implementa un foro completo con autenticación, roles, tópicos, respuestas anidadas y panel de administración, utilizando Spring Boot en el backend y HTML/CSS/JS en el frontend.
 
 # 🚀 Tecnologías utilizadas
